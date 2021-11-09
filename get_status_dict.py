@@ -1,4 +1,4 @@
-import os
+import json
 from collections import defaultdict
 from file_data_extractor_train import extract_files_train
 
@@ -11,6 +11,12 @@ def get_status_dictionary():
     status_dictionary = defaultdict(default_value)
 
     for doc in docs:
-        status_dictionary[doc.get_status()[:-1]] += 1
+        status = doc.get_status()
+        if status != '---':
+            status_dictionary[doc.get_status()] += 1
 
     return status_dictionary
+
+dict = get_status_dictionary()
+with open('all_statuses.json', 'w') as outfile:
+    json.dump(dict, outfile)
