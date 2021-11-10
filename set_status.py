@@ -1,9 +1,8 @@
-import os
-from get_status_dict import get_status_dictionary
-
+import json
 
 def set_status(filepath):
-    status_dict = get_status_dictionary()
+    with open('all_statuses.json') as statuses_json:
+        status_dict = json.load(statuses_json)
 
     with open(filepath, "r") as d:
         data = d.read()
@@ -13,3 +12,5 @@ def set_status(filepath):
             return status
 
     return '---'
+
+set_status('hi')
