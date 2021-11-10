@@ -5,80 +5,77 @@ from set_status import set_status
 
 class TestDocument:
     def __init__ (self, doc_filepath):
-        self.filepath = doc_filepath
         self.doc = self.read_doc(doc_filepath)
-        self.entities = self.extract_entities()
+        self.process_doc()
 
-        self.text = self.get_text(doc_filepath)
+        self.used_entities = []
+        self.text = os.path.basename(doc_filepath)
         self.acquired = self.get_acquired()
         self.acqbus = '---'
         self.acqloc = self.get_acqloc()
         self.drlamt = self.get_drlamt()
         self.purchaser = self.get_purchaser()
         self.seller = self.get_seller()
-        #self.status = self.get_status()                                              
-        self.status = '---'
+        self.status = '\"' + set_status(doc_filepath) + '\"'
 
-    def extract_entities(self):
+    def process_doc(self):
         nlp = spacy.load("en_core_web_trf")
-        text_model = nlp(self.doc)
-        entities = []
+        doc = nlp(self.doc)
+        self.processed_doc = doc
+
         valid_entities = []
-
-        for entity in text_model.ents:
-            entities.append(entity)
-
-        for entity in entities:
+        for entity in doc.ents:
             if 'and' not in entity.text:
                 entity.label_ = entity.label_.strip()
                 valid_entities.append(entity)
-
-        return valid_entities
-
+            
+        self.entities = valid_entities
+        
     def read_doc(self, filepath):
         text_raw = open(filepath, "r").read()
         return text_raw.replace('\n', ' ').strip();
 
-    def get_filepath(self):
-        return self.filepath
-
-    def get_text(self, filepath):
-        file = os.path.basename(filepath)
-        return os.path.splitext(file)[0]
-
     def get_acquired(self):
         for entity in self.entities:
             if entity.label_ == 'ORG' or entity.label_ == 'FACILITY':
-                return entity.text
+                self.used_entities.append(entity.text)
+                return '\"' + entity.text + '\"'
         return '---'
 
     def get_acqloc(self):
         for entity in self.entities:
             if entity.label_ == 'GPE' or entity.label_ == 'LOC':
-                return entity.text
+                return '\"' + entity.text + '\"'
         return '---'
 
     def get_drlamt(self):
         for entity in self.entities:
             if entity.label_ == 'MONEY':
-                return entity.text
+                return '\"' + entity.text + '\"'
         return '---'
-        
+
     def get_purchaser(self):
         for entity in self.entities:
             if entity.label_ == 'ORG' or entity.label_ == 'PERSON':
-                return entity.text
+                if entity.text not in self.used_entities:
+                    return '\"' + entity.text + '\"'
         return '---'
 
     def get_seller(self):
         for entity in self.entities:
             if entity.label_ == 'ORG' or entity.label_ == 'PERSON':
-                return entity.text
+                if entity.text not in self.used_entities:
+                    return '\"' + entity.text + '\"'
         return '---'
 
-    def get_status(self):
-
-        return self.status
-
-    def set_status(self):
-        self.status = set_status(self.filepath)
+    def print_to_file(self, output_file):
+        f = open(output_file, "a")   
+        f.write('TEXT: ' + self.text + '\n')
+        f.write('ACQUIRED: ' + self.acquired + '\n')
+        f.write('ACQBUS: ' + self.acqbus + '\n') 
+        f.write('ACQLOC: ' + self.acqloc + '\n')
+        f.write('DLRAMT: ' + self.drlamt + '\n')
+        f.write('PURCHASER: ' + self.purchaser + '\n')
+        f.write('SELLER: ' + self.seller + '\n') 
+        f.write('STATUS: ' + self.status + '\n \n')
+        f.close()

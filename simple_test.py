@@ -5,7 +5,6 @@ from data_extractor_test import  TestDocument
 from file_data_extractor_train import extract_files_train
 from file_data_extractor_test  import extract_files_test
 
-all_docs_train = extract_files_train()
 all_docs_test = extract_files_test()
 
 for doc in all_docs_test:

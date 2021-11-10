@@ -9,7 +9,7 @@ class TrainDocument:
         
     def read_doc(self, filepath):
         text_raw = open(filepath, "r").read()
-        return text_raw.replace('\n', ' ').strip();
+        return text_raw.replace('\n', ' ').strip()
 
     def read_ans(self, filepath):
         ans_raw = open(filepath, "r").readlines()
@@ -36,6 +36,8 @@ class TestDocument:
         self.seller = self.get_seller()
         self.status = '---'
 
+        self.used_entities = []
+
     def process_doc(self):
         nlp = spacy.load("en_core_web_trf")
         doc = nlp(self.doc)
@@ -51,11 +53,12 @@ class TestDocument:
         
     def read_doc(self, filepath):
         text_raw = open(filepath, "r").read()
-        return text_raw.replace('\n', ' ').strip();
+        return text_raw.replace('\n', ' ').strip()
 
     def get_acquired(self):
         for entity in self.entities:
             if entity.label_ == 'ORG' or entity.label_ == 'FACILITY':
+                self.used_entities.append(entity.text)
                 return entity.text
         return '---'
 

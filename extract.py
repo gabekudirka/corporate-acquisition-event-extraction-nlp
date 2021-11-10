@@ -1,21 +1,7 @@
-from data_extractor import TrainDocument, TestDocument
+from data_extractor_test import TestDocument
 import os
 import sys
 
-
-def extract_files_train():
-    docs_directory = './data/docs'
-    ans_directory = './data/anskeys'
-    doc_filenames = os.listdir(docs_directory)
-    docs = []
-
-    for ans_filename in os.listdir(ans_directory):
-        doc_filename = next(filename for filename in doc_filenames if filename == ans_filename[:-4])
-        doc_filepath = os.path.join(docs_directory, doc_filename)
-        ans_filepath = os.path.join(ans_directory, ans_filename)
-        docs.append(TrainDocument(doc_filepath, ans_filepath))
-
-    return docs
 
 def extract_files_test(num_files = -1):
     docs_directory = './data/docs'
@@ -28,18 +14,21 @@ def extract_files_test(num_files = -1):
 
     return docs
 
-#test_info_extraction = extract_files_test(30)
+extracted_files = extract_files_test()
 
 
-test_files = open(sys.argv[1], "r").readlines()
-test_files = [file.strip() for file in test_files]
+# test_files = open(sys.argv[1], "r").readlines()
+# test_files = [file.strip() for file in test_files]    
 
-extract_info = []
-for filepath in test_files:
-    test_files.append(TestDocument(filepath))
+# extract_info = []
+# for filepath in test_files:
+#     extract_info.append(TestDocument(filepath))
+
+#template_file = sys.argv[1] + '.template'
+template_file = 'test_doclist.template'
+for template in extracted_files:
+    template.print_to_file(template_file)
 
 
 
-
-
-print('yo')
+#print('hi')
