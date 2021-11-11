@@ -1,6 +1,10 @@
 # corporate-acquisition-event-extraction-nlp
 This is a system to extract events and roles from a text corpus of corporate acquisitions.
 
+** FOR 
+
+
+
 HOW TO RUN THIS PROJECT:
 1. Navigate to your desired directory and clone our project by running:
 git clone https://github.com/gabekudirka/corporate-acquisition-event-extraction-nlp.git
