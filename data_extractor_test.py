@@ -1,7 +1,7 @@
 import os
 import spacy
+import json
 from spacy.tokens.doc import Doc
-from set_status import set_status
 
 class TestDocument:
     def __init__ (self, doc_filepath):
@@ -16,7 +16,7 @@ class TestDocument:
         self.drlamt = self.get_drlamt()
         self.purchaser = self.get_purchaser()
         self.seller = self.get_seller()
-        self.status = '\"' + set_status(doc_filepath) + '\"'
+        self.status = self.set_status(doc_filepath)
 
     def process_doc(self):
         nlp = spacy.load("en_core_web_trf")
@@ -66,6 +66,19 @@ class TestDocument:
             if entity.label_ == 'ORG' or entity.label_ == 'PERSON':
                 if entity.text not in self.used_entities:
                     return '\"' + entity.text + '\"'
+        return '---'
+
+    def set_status(self, filepath):
+        with open('all_statuses.json') as statuses_json:
+            status_dict = json.load(statuses_json)
+
+        with open(filepath, "r") as d:
+            data = d.read()
+
+        for status in status_dict:
+            if status in data:
+                return '\"' + status + '\"'
+
         return '---'
 
     def print_to_file(self, output_file):
