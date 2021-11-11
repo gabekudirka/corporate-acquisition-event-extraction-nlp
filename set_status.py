@@ -12,5 +12,3 @@ def set_status(filepath):
             return status
 
     return '---'
-
-set_status('hi')
