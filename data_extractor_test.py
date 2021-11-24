@@ -43,6 +43,7 @@ class TestDocument:
         sentence = nlp(self.sentences[0].text)
         chunks = [(chunk.text, chunk.root.text, chunk.root.dep_,
             chunk.root.head.text) for chunk in sentence.noun_chunks]
+
         self.chunks = sentence.noun_chunks
         self.chunks_text = [chunk.text for chunk in self.chunks]
 
@@ -63,7 +64,6 @@ class TestDocument:
         #set entity dicts for each type
         self.loc_entities = {entity[0]: entity[1] for entity in valid_entities.items() if entity[1].label == 'LOC' or entity[1].label == 'GPE'}
         self.money_entities = {entity[0]: entity[1] for entity in valid_entities.items() if entity[1].label == 'MONEY'}
-        self.loc_entities = {entity[0]: entity[1] for entity in valid_entities.items() if entity[1].label == 'LOC' or entity[1].label == 'GPE'}
         self.acquired_entities = {entity[0]: entity[1] for entity in valid_entities.items() if entity[1].label == 'ORG' or entity[1].label == 'FACILITY'}
         self.buyer_seller_entities = {entity[0]: entity[1] for entity in valid_entities.items() if entity[1].label == 'ORG' or entity[1].label == 'PERSON'}
         self.entities = valid_entities
