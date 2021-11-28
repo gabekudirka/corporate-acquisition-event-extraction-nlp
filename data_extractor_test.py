@@ -68,12 +68,6 @@ class TestDocument:
         self.buyer_seller_entities = {entity[0]: entity[1] for entity in valid_entities.items() if entity[1].label == 'ORG' or entity[1].label == 'PERSON'}
         self.entities = valid_entities
 
-    def determine_buying_sentence(self, sentences):
-        for sentence in sentences:
-            if 'buy' in sentence.text.lower() or 'purchase' in sentence.text.lower():
-                return sentence
-        return None
-
     def get_acquired(self):
         for entity in self.entities:
             if entity.label_ == 'ORG' or entity.label_ == 'FACILITY':

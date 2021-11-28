@@ -1,0 +1,913 @@
+TEXT: 10025
+ACQUIRED: "Shelard Bancshares Inc"
+ACQBUS: "bank"
+ACQLOC: "Minnesota" / "Minneapolis-St. Paul"
+DLRAMT: "about 25 mln dlrs"
+PURCHASER: "First Wisconsin Corp"
+SELLER: ---
+STATUS: ---
+
+TEXT: 10335
+ACQUIRED: "Alcan New Zealand Ltd"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: "39.3 mln N.Z. Dlr"
+PURCHASER: "Alcan Australia Ltd"
+SELLER: ---
+STATUS: "bid"
+
+TEXT: 11465
+ACQUIRED: "Process Chemicals Division"
+ACQBUS: "specialty chemicals"
+ACQLOC: ---
+DLRAMT: "undisclosed"
+PURCHASER: "HENKEL KGAA" / "Henkel KGaA of"
+SELLER: "Occidental Chemical Corp"
+STATUS: "completed"
+
+TEXT: 11515
+ACQUIRED: "Sovereign Corp"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: "Chubb Corp"
+SELLER: ---
+STATUS: "completed"
+
+TEXT: 11553
+ACQUIRED: "Greene Dental Products Inc"
+ACQBUS: "dental X-ray tabs, mount products and record systems"
+ACQLOC: ---
+DLRAMT: "not disclosed"
+PURCHASER: "Rinn Corp"
+SELLER: "Sterling Drug Inc"
+STATUS: "sold"
+
+TEXT: 12225
+ACQUIRED: "Consolidated Brazilian Mines International Inc"
+ACQBUS: "diamond and gold"
+ACQLOC: "BRAZIL" / "Brazil"
+DLRAMT: "not disclosed"
+PURCHASER: "Upland Minerals and Chemicals Corp"
+SELLER: ---
+STATUS: "agreed to acquire"
+
+TEXT: 12345
+ACQUIRED: "Mizel Petro Resources Inc"
+ACQBUS: "oil and gas"
+ACQLOC: ---
+DLRAMT: "38 mln dlrs"
+PURCHASER: "Parker and Parsley Petroleum Co"
+SELLER: "M.D.C. Holdings Inc"
+STATUS: "sold"
+
+TEXT: 12390
+ACQUIRED: "Interlake Property"
+ACQBUS: "mining"
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: "Galveston Resources Ltd"
+SELLER: "Hemlo Gold Mines Inc"
+STATUS: "agreed in principle"
+
+TEXT: 12620
+ACQUIRED: "Vernitron Corp"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: "SB Holding Corp"
+SELLER: ---
+STATUS: "proposed"
+
+TEXT: 12890
+ACQUIRED: "Cleveland chemical plant"
+ACQBUS: "Quilon chrome complexes and Volan bonding agents"
+ACQLOC: "CLEVELAND"
+DLRAMT: "not disclosed"
+PURCHASER: ---
+SELLER: "Du Pont Co"
+STATUS: "agreed to sell"
+
+TEXT: 12900
+ACQUIRED: "CWT Inc"
+ACQBUS: "trucking"
+ACQLOC: "Midwest and Southeast"
+DLRAMT: ---
+PURCHASER: "management"
+SELLER: "Gerber Products Co"
+STATUS: ---
+
+TEXT: 12933
+ACQUIRED: "a company in the industrial service business"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: "1.98 mln dlrs"
+PURCHASER: "Allwaste Inc"
+SELLER: ---
+STATUS: "agreed in principle"
+
+TEXT: 12965
+ACQUIRED: "Symbion Inc"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: "Warburg, Pincus Capital Co L.P."
+SELLER: ---
+STATUS: "would not increase"
+
+TEXT: 13005
+ACQUIRED: "CIS Technologies Inc"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: "Swiss Reinsurance Co"
+SELLER: ---
+STATUS: "executed a formal share purchase agreement"
+
+TEXT: 13060
+ACQUIRED: "Bell Petroleum Services Inc"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: "Regal International Inc"
+SELLER: ---
+STATUS: "agreed to begin talks"
+
+TEXT: 13090
+ACQUIRED: "nine "
+ACQBUS: ---
+ACQLOC: "Dallas"
+DLRAMT: ---
+PURCHASER: "Kroger Co"
+SELLER: "Safeway Stores Inc"
+STATUS: "agreed"
+
+TEXT: 13095
+ACQUIRED: "Duffour et Igon"
+ACQBUS: "chemicals"
+ACQLOC: "French"
+DLRAMT: ---
+PURCHASER: "Carburos Metalicos"
+SELLER: ---
+STATUS: "bid"
+
+TEXT: 13265
+ACQUIRED: "TMOC Resources Ltd"
+ACQBUS: "oil-gas" / "gas or oil"
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: "AUSTRALIAN GAS LIGHT CO" / "The Australian Gas Light Co"
+SELLER: ---
+STATUS: "will offer"
+
+TEXT: 135
+ACQUIRED: "Robeson Industries Corp"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: "175,691 dlrs"
+PURCHASER: "Fundamental Management Corp"
+SELLER: ---
+STATUS: "raised its stake"
+
+TEXT: 13790
+ACQUIRED: "E.F. Hutton Group Inc EFH"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: "Emery Air Freight Corp"
+SELLER: ---
+STATUS: "entered into an agreement"
+
+TEXT: 14900
+ACQUIRED: "Monier Ltd"
+ACQBUS: "Diversified building materials" / "roof tile"
+ACQLOC: "Australia, the U.S. And New Zealand"
+DLRAMT: ---
+PURCHASER: "Redland Plc"
+SELLER: ---
+STATUS: "talks are taking place"
+
+TEXT: 15210
+ACQUIRED: "Datron Corp"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: "GGHF Inc"
+SELLER: ---
+STATUS: "agreed"
+
+TEXT: 15545
+ACQUIRED: "Nuovo Banco Ambrosiano Spa"
+ACQBUS: "shareholding" / "bank"
+ACQLOC: "Milan"
+DLRAMT: "205 billion lire"
+PURCHASER: "Gemina Spa"
+SELLER: ---
+STATUS: ---
+
+TEXT: 15575
+ACQUIRED: "Esso South Africa"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: "undisclosed purchase price"
+PURCHASER: "Zenex Oil Pty Ltd"
+SELLER: "Exxon Corp"
+STATUS: "acquired"
+
+TEXT: 15600
+ACQUIRED: "GenCorp Inc"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: ---
+SELLER: "GENERAL PARTNERS" / "General Partners"
+STATUS: ---
+
+TEXT: 15970
+ACQUIRED: "Frampton Computer Services Ltd"
+ACQBUS: "software"
+ACQLOC: "Bristol, England"
+DLRAMT: ---
+PURCHASER: "McDonnell Douglas Corp"
+SELLER: ---
+STATUS: "acquired"
+
+TEXT: 16215
+ACQUIRED: "Dome Petroleum Ltd"
+ACQBUS: "oil and gas"
+ACQLOC: "Calgary"
+DLRAMT: "3.22 billion dlr"
+PURCHASER: "TransCanada Pipelines Ltd"
+SELLER: ---
+STATUS: "offer"
+
+TEXT: 16370
+ACQUIRED: "Trans-Lux Corp"
+ACQBUS: "leases teleprinters and display units"
+ACQLOC: "Connecticut"
+DLRAMT: ---
+PURCHASER: "Albert Kahn"
+SELLER: ---
+STATUS: ---
+
+TEXT: 16465
+ACQUIRED: "Haba Systems Inc"
+ACQBUS: "microcomputer software"
+ACQLOC: ---
+DLRAMT: "4.1 mln dlrs"
+PURCHASER: "Arrays Inc"
+SELLER: ---
+STATUS: "completed"
+
+TEXT: 16475
+ACQUIRED: "DOME PETROLEUM LTD" / "Dome Petroleum Ltd"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: "4.3 billion Canadian dlr"
+PURCHASER: "TransCanada PipeLines Ltd"
+SELLER: ---
+STATUS: ---
+
+TEXT: 16510
+ACQUIRED: "Robert Half and Accountemps" / "Robert Half International Inc"
+ACQBUS: ---
+ACQLOC: "New England"
+DLRAMT: "59 mln dlrs"
+PURCHASER: "Boothe Financial Corp"
+SELLER: ---
+STATUS: ---
+
+TEXT: 16555
+ACQUIRED: "Winchester Little Cigar Business"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: "not disclosed"
+PURCHASER: "Tobacco Exporters International USA Ltd"
+SELLER: "RJ Reynolds Tobacco USA" / "Rj Reynolds Tobacco USA"
+STATUS: "definitive agreement"
+
+TEXT: 16695
+ACQUIRED: "SystemOne Direct Access Inc"
+ACQUIRED: "EAL Automation Systems Inc"
+ACQBUS: "travel agency automation"
+ACQBUS: "computer and communications support"
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: "SystemOne Corp"
+SELLER: "Eastern Airlines"
+STATUS: "completed"
+
+TEXT: 16700
+ACQUIRED: "Blasius Industries Inc"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: "Fidelity International Ltd"
+PURCHASER: "American Values III N.V."
+SELLER: ---
+STATUS: "acquired"
+
+TEXT: 17110
+ACQUIRED: "unnamed company owned by Frenchman Hubert Perrodo"
+ACQBUS: "oil"
+ACQLOC: "Torrance, California"
+DLRAMT: ---
+PURCHASER: "Petranol Plc"
+SELLER: ---
+STATUS: "discussing the takeover"
+
+TEXT: 17595
+ACQUIRED: "Canadian bottling subsidiary"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: "undisclosed"
+PURCHASER: "Coca-Cola Co"
+SELLER: "Coca-Cola Bottling Co Consolidated"
+STATUS: "agreed in principle"
+
+TEXT: 17770
+ACQUIRED: "Old National Bancorp" / "Old National"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: "171 mln dlrs"
+PURCHASER: "U.S. Bancorp (Oregon)" / "U.S. Bancorp"
+SELLER: ---
+STATUS: "approved"
+
+TEXT: 17810
+ACQUIRED: "Charmglow"
+ACQBUS: "consumer products"
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: "Roth-American Inc"
+SELLER: "Atcor Inc"
+STATUS: "decided against buying"
+
+TEXT: 17835
+ACQUIRED: "Financial Security Savings and Loan Association"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: "not disclosed"
+PURCHASER: "William Landa"
+SELLER: ---
+STATUS: "letter of intent"
+
+TEXT: 18435
+ACQUIRED: "Hydraulic Units Inc"
+ACQBUS: "hydraulic and mechanical systems"
+ACQLOC: ---
+DLRAMT: "42.5 MLN DLRS" / "42.5 mln dlrs"
+PURCHASER: "Dowty Group Plc"
+SELLER: "Boeing Co"
+STATUS: "agreed to buy"
+
+TEXT: 18590
+ACQUIRED: "Research-Cottrell Inc"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: "Halcyon Investments"
+SELLER: ---
+STATUS: ---
+
+TEXT: 18895
+ACQUIRED: "Clinton American Corp"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: "Leader Development Corp"
+SELLER: ---
+STATUS: "approved"
+
+TEXT: 19180
+ACQUIRED: "First National Bank of Destin"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: "undisclosed"
+PURCHASER: "COLONIAL BANCGROUP" / "Colonial Bancgroup"
+SELLER: ---
+STATUS: "agreed to buy"
+
+TEXT: 19270
+ACQUIRED: "UNC Inc"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: "Dillon, Read and Co Inc"
+PURCHASER: "Donaldson, Lufkin and Jenrette Securities Corp"
+SELLER: "Chevron Corp"
+STATUS: ---
+
+TEXT: 19645
+ACQUIRED: "Personal Protection Technolgies Inc"
+ACQBUS: "personal care products"
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: "New Generation Products Inc"
+SELLER: ---
+STATUS: "acquired"
+
+TEXT: 19895
+ACQUIRED: "Ryan-McFarland Corp"
+ACQBUS: "COBOL and FORTRAN language compilers"
+ACQLOC: "Rolling Hills Estates, Calif"
+DLRAMT: "undisclosed"
+PURCHASER: "Austec Inc"
+SELLER: ---
+STATUS: "completed"
+
+TEXT: 20035
+ACQUIRED: "Morgan Grenfell Group Plc"
+ACQBUS: "merchant banking"
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: ---
+SELLER: "Willis Faber Plc"
+STATUS: ---
+
+TEXT: 2010
+ACQUIRED: "Cie Generale de Constructions Telephoniques (CGCT)"
+ACQBUS: "telephone equipment"
+ACQLOC: "French"
+DLRAMT: ---
+PURCHASER: ---
+SELLER: ---
+STATUS: "applied to buy"
+
+TEXT: 20725
+ACQUIRED: "portfolio of about 190,000 consumer revolving credit accounts"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: "370 mln dlrs"
+PURCHASER: "Chase Manhattan Bank"
+SELLER: "Atlantic Financial Federal"
+STATUS: "acquired"
+
+TEXT: 20775
+ACQUIRED: "Metex Corp"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: "Metropolitan Consolidated Industries Inc"
+SELLER: ---
+STATUS: "will make a tender offer"
+
+TEXT: 21000
+ACQUIRED: "Intercep Investment Corp"
+ACQBUS: ---
+ACQLOC: "Vancouver, B.C."
+DLRAMT: ---
+PURCHASER: "CCR Video Corp"
+SELLER: ---
+STATUS: "enter into negotiations"
+
+TEXT: 21040
+ACQUIRED: "Charter-Crellin Inc"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: "1.51 mln dlrs"
+PURCHASER: "Atlantis Group Inc"
+SELLER: ---
+STATUS: "bought"
+STATUS: "may seek control"
+
+TEXT: 2325
+ACQUIRED: "Newport Beach Art Supply Center"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: "not disclosed"
+PURCHASER: "Art Store"
+SELLER: "Bishop Graphics Inc"
+STATUS: ---
+
+TEXT: 2365
+ACQUIRED: "First State Bancshares Inc of Pensacola, Fla." / "First State Bank of Pensacola"
+ACQBUS: "BANK"
+ACQLOC: "FLORIDA"
+DLRAMT: ---
+PURCHASER: "First Union Corp"
+SELLER: ---
+STATUS: "agreed to acquire"
+
+TEXT: 2570
+ACQUIRED: "Revlon Group Inc"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: "McAndrews and Forbes Holdings Inc"
+SELLER: ---
+STATUS: "offer"
+
+TEXT: 2660
+ACQUIRED: "filter products division"
+ACQBUS: "filter products"
+ACQLOC: ---
+DLRAMT: "undisclosed"
+PURCHASER: "Donaldson Co Inc"
+SELLER: "Mine Safety Appliances Co"
+STATUS: "agreed to sell"
+
+TEXT: 3025
+ACQUIRED: "Resorts International Inc"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: "Donald Trump"
+SELLER: ---
+STATUS: "offered to acquire"
+
+TEXT: 3120
+ACQUIRED: "ethylene products business"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: "undisclosed terms"
+PURCHASER: "Sterling Group"
+SELLER: "PPG Industries Inc"
+STATUS: ---
+
+TEXT: 3239
+ACQUIRED: "Cyclops Corp"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: ---
+SELLER: "Harris Associates L.P."
+STATUS: ---
+
+TEXT: 3295
+ACQUIRED: "Debbie's School of Beauty Culture Inc"
+ACQUIRED: "Ultra Precise Beauty Boutique Inc"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: "2,533,000 dlrs"
+PURCHASER: ---
+SELLER: "Johnson Products Co Inc"
+STATUS: "completed"
+
+TEXT: 376
+ACQUIRED: "Stanwell Financial"
+ACQBUS: "lending operations"
+ACQLOC: ---
+DLRAMT: "undisclosed"
+PURCHASER: "Financial Corp of Santa Barbara"
+SELLER: "Stanwell Mortgage"
+STATUS: "definitive agreement"
+
+TEXT: 3910
+ACQUIRED: "Railway Maintenance Equipment Co"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: "Oak Industries Inc"
+SELLER: "Rexnord Inc"
+STATUS: "definitive agreement"
+
+TEXT: 4145
+ACQUIRED: "Putnam Mills Corp"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: "Pope, Evans and Robbins Inc"
+SELLER: ---
+STATUS: "repurchased"
+
+TEXT: 4315
+ACQUIRED: "Corpus Christi, Texas refinery"
+ACQBUS: "oil"
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: "Petroleos De Venezuela"
+SELLER: "Union Pacific Corp"
+STATUS: "will sign a pact"
+
+TEXT: 4605
+ACQUIRED: "Screen Entertainment film library"
+ACQBUS: "theatrical motion pictures"
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: "WEintraub Entertainment Group Inc"
+SELLER: "Cannon Group"
+STATUS: ---
+
+TEXT: 4615
+ACQUIRED: "TSS-Seedman's INc"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: "about 50 mln dlrs"
+PURCHASER: "Price Co"
+SELLER: ---
+STATUS: "agreed to buy"
+
+TEXT: 4850
+ACQUIRED: "commercial lending portfolio"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: "Chrysler First Inc"
+SELLER: "Beneficial Business Credit Corp"
+STATUS: "acquired"
+
+TEXT: 4910
+ACQUIRED: "Allegheny International Inc"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: "Sunter Acquisititon Corp"
+SELLER: ---
+STATUS: "began a cash tender offer"
+
+TEXT: 4955
+ACQUIRED: "educational software unit"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: "undisclosed"
+PURCHASER: "Mindscsape Inc"
+SELLER: "Holt, Rinehart and Winston Inc"
+STATUS: "agreed to buy"
+
+TEXT: 505
+ACQUIRED: "Bankhaus Centrale Credit AG"
+ACQBUS: "bank"
+ACQLOC: "West German"
+DLRAMT: ---
+PURCHASER: ---
+SELLER: "Bank of America NT and SA"
+STATUS: ---
+
+TEXT: 5465
+ACQUIRED: "Metex Corp"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: "Metropolitan Consolidated Industries Inc"
+SELLER: "Alan Cohen"
+STATUS: "sold"
+
+TEXT: 5615
+ACQUIRED: "2001 Distributors Inc"
+ACQBUS: "fresh-squeezed juices"
+ACQLOC: "West Babylon, N.Y."
+DLRAMT: ---
+PURCHASER: "International Fine Foods Inc"
+SELLER: ---
+STATUS: ---
+
+TEXT: 5670
+ACQUIRED: "City Consumer Serices Inc"
+ACQBUS: "consumer lending"
+ACQLOC: "Arizona, Colorado, Illinois, Maryland, New Mexico, Oregon and Virginia"
+DLRAMT: "undisclosed"
+PURCHASER: "Goldome FSB"
+SELLER: "City Federal Savings Bank"
+STATUS: "preliminary agreement"
+
+TEXT: 6085
+ACQUIRED: "Taft Broadcasting Co"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: "Theta Corp"
+SELLER: ---
+STATUS: "explore alternatives"
+
+TEXT: 6135
+ACQUIRED: ---
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: "not disclosed"
+PURCHASER: "Fortune Savings Bank"
+SELLER: "Financial Security Savings and Loan Association"
+STATUS: "agreed to buy"
+
+TEXT: 6340
+ACQUIRED: "San Miguel Corp"
+ACQBUS: "brewer"
+ACQLOC: ---
+DLRAMT: "800 mln pesos"
+PURCHASER: "Philippines' Social Security System"
+SELLER: ---
+STATUS: "planning to buy"
+
+TEXT: 6695
+ACQUIRED: "Micro Plus II Corp"
+ACQBUS: "communications hardware"
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: "Rabbit Software Corp"
+SELLER: ---
+STATUS: "agreed in principle"
+
+TEXT: 6815
+ACQUIRED: "GenCorp Inc"
+ACQBUS: "broadcast"
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: "General Partners"
+SELLER: ---
+STATUS: ---
+
+TEXT: 7090
+ACQUIRED: "Metro Funding Corp"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: "Maxcom Corp"
+SELLER: ---
+STATUS: "approved"
+
+TEXT: 7110
+ACQUIRED: "Cyclops Corp"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: "Dixons Group plc"
+SELLER: ---
+STATUS: ---
+
+TEXT: 7130
+ACQUIRED: "Scan-Graphics Inc"
+ACQBUS: "systems that allow users to convert graphic documents"
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: "Captive Venture Capital Inc"
+SELLER: ---
+STATUS: "will be acquired"
+
+TEXT: 7220
+ACQUIRED: "First Tuskaloosa Corp"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: "105.6 mln dlrs"
+PURCHASER: "AmSouth Corp"
+SELLER: ---
+STATUS: "approved"
+
+TEXT: 7260
+ACQUIRED: "Europharmaceutical Co"
+ACQBUS: "condoms" / "condoms and vaginal products"
+ACQLOC: ---
+DLRAMT: "two mln dlr"
+PURCHASER: "Solar Systems by Sundance Inc"
+SELLER: "INKEY SA"
+STATUS: "agreed to buy"
+
+TEXT: 7315
+ACQUIRED: "U.S. Transit Bus and Parts"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: "undisclosed"
+PURCHASER: "Greyhound Corp"
+SELLER: "General Motors Corp"
+STATUS: "definitive agreement"
+
+TEXT: 735
+ACQUIRED: "Pitman-Moore"
+ACQBUS: "animal health products" / "health products for pets and for farm and feedstock animals"
+ACQLOC: ---
+DLRAMT: "not disclosed"
+PURCHASER: "International Minerals and Chemical Corp"
+SELLER: "Johnson and Johnson Co"
+STATUS: "completed"
+
+TEXT: 745
+ACQUIRED: "West Virginia Power"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: "21 mln dlrs"
+PURCHASER: "UtiliCorp United Inc"
+SELLER: "Dominion Resources Inc"
+STATUS: "closed"
+
+TEXT: 8115
+ACQUIRED: "Supermarkets General Corp"
+ACQBUS: "supermarket"
+ACQLOC: ---
+DLRAMT: "1.62 billion dlr"
+PURCHASER: "Dart Group Corp"
+SELLER: ---
+STATUS: ---
+
+TEXT: 820
+ACQUIRED: "industrial tire and assembly division"
+ACQBUS: "tire production"
+ACQLOC: "Clinton, Tenn."
+DLRAMT: "undisclosed"
+PURCHASER: "Dyneer Corp"
+SELLER: "Armtek Corp"
+STATUS: "agreed"
+
+TEXT: 8355
+ACQUIRED: "Michigan operations"
+ACQBUS: ---
+ACQLOC: "MICHIGAN"
+DLRAMT: "46 mln dlrs"
+PURCHASER: "Meadowdale Foods Inc"
+SELLER: "Allied Supermarkets Inc"
+STATUS: "definitive agreement"
+
+TEXT: 8370
+ACQUIRED: "Neville Lewis Associates"
+ACQUIRED: "Walker Associates Inc"
+ACQBUS: ---
+ACQLOC: "New York"
+ACQLOC: "L.A."
+DLRAMT: "undisclosed"
+PURCHASER: "PHH Group Inc"
+SELLER: ---
+STATUS: "acquired"
+
+TEXT: 840
+ACQUIRED: "DataGene Scientific Laboratories Inc"
+ACQUIRED: "Milex Corp"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: "Microbiological Research Corp"
+SELLER: ---
+STATUS: "letter of intent"
+
+TEXT: 8685
+ACQUIRED: "Norcros Plc"
+ACQBUS: "building products and packaging"
+ACQLOC: ---
+DLRAMT: "542.2 MLN STG" / "542.2 mln stg"
+PURCHASER: "Williams Holdings Plc"
+SELLER: ---
+STATUS: "rejecting"
+
+TEXT: 8780
+ACQUIRED: "DEI Acquisition Corp"
+ACQBUS: "specialty insulation installation and asbestos removal"
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: "J.M. RESOURCES INC" / "J.M. Resources Inc"
+SELLER: "InterFirst Venture Corp"
+SELLER: "Sam B. Myers"
+SELLER: "Neomar Resources Inc"
+SELLER: "Richard L. Morgan"
+STATUS: "acquired"
+
+TEXT: 8795
+ACQUIRED: "Interlake Steamship Co"
+ACQUIRED: "Moore McCormack Bulk Transport Inc"
+ACQBUS: "bulk shipping"
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: "James R. Barker"
+SELLER: "Moore McCormack Resources Inc"
+STATUS: "completed"
+
+TEXT: 8830
+ACQUIRED: "Compagnie Francaise d'Electro-Chimie"
+ACQBUS: "lead-acid batteries"
+ACQLOC: "French"
+DLRAMT: "undisclosed"
+PURCHASER: "GNB Inc"
+SELLER: ---
+STATUS: ---
+
+TEXT: 8855
+ACQUIRED: "Automobili Lamborghini SpA"
+ACQBUS: "car maker"
+ACQLOC: "Italian"
+DLRAMT: ---
+PURCHASER: "Chrysler Corp"
+SELLER: ---
+STATUS: ---
+
+TEXT: 9510
+ACQUIRED: "Sentuc Porxpan SA"
+ACQBUS: "foam insulation"
+ACQLOC: "French"
+DLRAMT: "undisclosed"
+PURCHASER: "Lafarege Corp"
+SELLER: "Owens-Corning Fiberglas Corp"
+STATUS: "sold"
+
+TEXT: 9891
+ACQUIRED: "Foote Mineral Co"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: "Rio Tinto-Zinc Corp PLC"
+SELLER: "Newmont Mining Corp"
+STATUS: "letter of intent"
+
+TEXT: 9920
+ACQUIRED: "Walker County Telephone Co"
+ACQBUS: ---
+ACQLOC: "LaFayette, Ga." / "northeast Georgia"
+DLRAMT: "undisclosed"
+PURCHASER: "Contel Corp"
+SELLER: ---
+STATUS: "agreed in principle"
+
+TEXT: 9925
+ACQUIRED: "Thermo Process Services Inc"
+ACQBUS: ---
+ACQLOC: ---
+DLRAMT: ---
+PURCHASER: "Thermo Process Systems Inc"
+SELLER: "Thermo Electron Corp"
+STATUS: "completed"
+

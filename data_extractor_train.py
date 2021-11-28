@@ -6,9 +6,11 @@ from functools import cache
 import networkx as nx
 from sklearn.preprocessing import OneHotEncoder
 import csv
+import gensim.downloader
+import numpy as np
 
 class FeatureVector:
-    def __init__(self, text, dep, pos, head_text, head_pos, head_dep, next_verb):
+    def __init__(self, text, dep, pos, head_text, head_pos, head_dep, next_verb, sentence):
         self.text = text
         self.tokens = text.split()
         self.dep = dep
@@ -22,6 +24,10 @@ class FeatureVector:
         self.next_verb = next_verb
         self.label = 'none'
         self.add_to_list = True
+        self.sentence = sentence
+
+spacy_model = spacy.load('en_core_web_trf')
+gensim_model = gensim.downloader.load('glove-wiki-gigaword-50')
 
 class TrainDocument:
     def __init__ (self, doc_filepath, ans_filepath, get_ml_features=False):
@@ -29,6 +35,12 @@ class TrainDocument:
         self.read_ans(ans_filepath)
 
         if get_ml_features:
+            #trf is most accurate ner model in spacy, doesn't include word embeddings
+            self.nlp = spacy_model
+            #load in the md pipeline just for word embeddings
+            #self.nlp_md = spacy.load('en_core_web_md', exclude=['tagger', 'parser', 'ner', 'attribute_ruler', 'lemmatizer'])
+            self.gensim_model = gensim_model
+            self.spacy_doc = self.nlp(self.doc)
             self.get_ml_features()
 
     def read_doc(self, filepath):
@@ -67,19 +79,70 @@ class TrainDocument:
     def get_feature_vector(self):
         feature_vecs_output = []
         for feature_vec in self.feature_vectors:
-            feature_vec_output = [feature_vec.text, feature_vec.dep, feature_vec.pos, feature_vec.head_text, feature_vec.head_pos, feature_vec.head_dep, feature_vec.next_verb,
-                                  feature_vec.entity_label, feature_vec.frequency_in_doc, feature_vec.sentence_loc, feature_vec.sentence_num, feature_vec.label] 
+            feature_vec_output = [feature_vec.label, feature_vec.dep, feature_vec.pos, feature_vec.head_pos, feature_vec.head_dep, 
+                                  feature_vec.entity_label, feature_vec.frequency_in_doc, feature_vec.sentence_loc, feature_vec.sentence_num]
+
+            feature_vec_output.extend(self.get_word_embeddings(feature_vec.text))
+            feature_vec_output.extend(self.get_word_embeddings(feature_vec.head_text))
+            feature_vec_output.extend(self.get_word_embeddings(feature_vec.next_verb))
+            
+            for word in feature_vec.sliding_window:
+                feature_vec_output.extend(self.get_word_embeddings(word))
+
             feature_vecs_output.append(feature_vec_output)
         return feature_vecs_output
 
-    def get_location_sentence(self, sentence, phrase_tokens):
-        for i in range(len(sentence)):
-            if sentence.text.split()[i:i+len(phrase_tokens)] == phrase_tokens:
-                return (i, i+len(phrase_tokens))
-        return (-1, -1)
+    def get_location_sentence(self, sentence, phrase):
+        try:
+            start_index = sentence.text.index(phrase)
+            start_loc = len(sentence.text[:start_index].split())
+            return (start_loc, start_loc + len(phrase.split()))
+        except:
+            return (-1, -1)
+        # phrase_tokens = phrase.split()
+        # for i in range(len(sentence)):
+        #     if sentence.text.split()[i:i+len(phrase_tokens)] == phrase_tokens:
+        #         return (i, i+len(phrase_tokens))
+        # return (-1, -1)
 
-    def get_sliding_window(self, sentence, feature_vec):
-        pass
+    #get two word sliding window
+    def get_sliding_window(self, feature_vec):
+        phrase = feature_vec.text
+        sentence = feature_vec.sentence
+        sentence_tokens = sentence.text.split()
+        indexes = self.get_location_sentence(sentence, phrase)
+
+        sliding_window = []
+        l = len(sentence_tokens)
+        try:
+            if indexes[0] == 0 or indexes[0] == -1:
+                sliding_window.append('phi2')
+                sliding_window.append('phi1')
+            elif indexes[0] == 1:
+                sliding_window.append('phi1')
+                sliding_window.append(sentence_tokens[0])
+            else:
+                sliding_window.append(sentence_tokens[indexes[0]-2])
+                sliding_window.append(sentence_tokens[indexes[0]-1])
+        except:
+            sliding_window = ['phi2', 'phi1']
+
+        try:
+            if indexes[1] == len(sentence_tokens) or indexes[1] == -1:
+                sliding_window.append('omega1')
+                sliding_window.append('omega2')
+            elif indexes[1] + 1 == len(sentence_tokens):
+                sliding_window.append(sentence_tokens[indexes[1]])
+                sliding_window.append('omega1')
+            else:
+                sliding_window.append(sentence_tokens[indexes[1]])
+                sliding_window.append(sentence_tokens[indexes[1]+1])
+        except:
+            sliding_window = sliding_window[:2]
+            sliding_window.append('omega1')
+            sliding_window.append('omega2')
+
+        return sliding_window
 
     def one_hot_encode(self, feature_vec):
         POS_categories = ['ADJ', 'ADP', 'ADV', 'AUX', 'CONJ', 'CCONJ', 'DET', 'INTJ', 'NOUN', 'NUM', 'PART', 'PRON', 'PROPN', 'PUNCT', 'SCONJ', 'SYM', 'VERB', 'X']
@@ -90,24 +153,48 @@ class TrainDocument:
         one_hot_encoded = one_hot_encoder.fit_transform([feature_vec])
         return one_hot_encoded
 
+    def get_word_embeddings(self, word):
+        if len(word.split()) == 1:
+            word = word.translate(str.maketrans('', '', string.punctuation))
+            if word.isdigit():
+                return self.gensim_model['number']
+            try:
+                return self.gensim_model[word]
+            except:
+                return self.gensim_model['unknown']
+        elif len(word.split()) > 1:
+            word_tokens = [word.translate(str.maketrans('', '', string.punctuation)) for word in word.split()]
+            embeddings = []
+            for word in word_tokens:
+                if word.isdigit():
+                    embeddings.append(self.gensim_model['number'])
+                    continue
+                try:
+                    embeddings.append(self.gensim_model[word])
+                except:
+                    embeddings.append(self.gensim_model['unknown'])
+            return np.mean(np.asarray(embeddings), axis=0)
+        else:
+            return self.gensim_model['unknown']
+
     def get_ml_features(self):
-        nlp = spacy.load("en_core_web_trf")
-        self.spacy_doc = nlp(self.doc)
+        
         self.entities = self.process_entities(self.spacy_doc.ents)
 
-        sentences = [nlp(sentence.text) for sentence in list(self.spacy_doc.sents)[:3]]
+        sentences = [self.nlp(sentence.text) for sentence in list(self.spacy_doc.sents)[:3]]
         feature_vectors = []
         sentences_to_consider = min(len(sentences) - 1, 3)
         for i in range(sentences_to_consider):
             feature_vectors.append(self.process_chunks(sentences[i].noun_chunks, sentences[i]))
             for feature_vec in feature_vectors[i]:
                 feature_vec.sentence_num = i
-                feature_vec.sentence_loc = self.get_location_sentence(sentences[i], feature_vec.tokens)[0]
+                feature_vec.sentence_loc, _ = self.get_location_sentence(sentences[i], feature_vec.text)
                 if feature_vec.text in self.entities.keys() and self.entities[feature_vec.text].is_reference == False:
                     feature_vec.entity_label = self.entities[feature_vec.text].label
                 else:
                     feature_vec.entity_label = 'nonent'
                 feature_vec.frequency_in_doc = (self.doc.count(feature_vec.text))
+                feature_vec.sliding_window = self.get_sliding_window(feature_vec)
 
         self.feature_vectors = [vector for sublist in feature_vectors for vector in sublist]
 
@@ -120,7 +207,8 @@ class TrainDocument:
         for chunk in chunk_list:
             if chunk.text == 'Reuter':
                 continue
-            feature_vec = FeatureVector(chunk.text, chunk.root.dep_, chunk.root.pos_, chunk.root.head.text, chunk.root.head.pos_, chunk.root.head.dep_, self.get_next_verb(chunk, sentence))
+            feature_vec = FeatureVector(chunk.text, chunk.root.dep_, chunk.root.pos_, chunk.root.head.text, chunk.root.head.pos_,
+                                        chunk.root.head.dep_, self.get_next_verb(chunk, sentence), sentence)
             for entity in self.true_slots.keys():
                 entity_tokens = [token.translate(str.maketrans('', '', string.punctuation)) for token in entity.split()]
                 if all(token in feature_vec.tokens for token in entity_tokens):
@@ -148,11 +236,11 @@ class TrainDocument:
             #If no noun phrase is found with the exact same text as gold slot, find the gold slot in the doc manually
             #and add it to the feature list
             slot_entity_tokens = slot_entity.split()
-            indexes = self.get_location_sentence(sentence, slot_entity_tokens)
+            indexes = self.get_location_sentence(sentence, slot_entity)
             if indexes[0] != -1:
                 token = sentence[indexes[-1] - 1]
-                #next verb is not correct
-                feature_vec = FeatureVector(tokenized_true_slots[slot][0], token.dep_, token.pos_, token.head.text, token.head.pos_, token.head.dep_, self.get_next_verb(token, sentence, ischunk=False))
+                feature_vec = FeatureVector(tokenized_true_slots[slot][0], token.dep_, token.pos_, token.head.text, token.head.pos_, 
+                                            token.head.dep_, self.get_next_verb(token, sentence, ischunk=False), sentence)
                 feature_vec.label = slot
                 feature_vector_list.append(feature_vec)
             #If we can't find the gold slot manually (for some reason), use a related noun phrase vector with gold phrase as text
@@ -183,7 +271,6 @@ class TrainDocument:
                 return self.true_slots[entity]
         return 'none'
 
-    #Eventually make this recursive - use @cache
     def get_next_verb(self, target, sentence, ischunk=True):
         if ischunk:
             target = target.root
@@ -227,6 +314,6 @@ class TrainDocument:
 if __name__ == '__main__':
     test_doc = TrainDocument("./data/docs/11996", "./data/anskeys/11996.key", get_ml_features=True)
     features = test_doc.get_feature_vector()
-    with open('output.csv', 'a', newline="") as f:
+    with open('output_test.csv', 'a', newline="") as f:
             writer = csv.writer(f)
             writer.writerows(features)

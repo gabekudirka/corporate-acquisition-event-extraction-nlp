@@ -33,7 +33,7 @@ def extract_files_train_ml():
             features.append(feature)
 
     
-    with open('output.csv', 'a', newline="") as f:
+    with open('output_sliding_window_50d.csv', 'a', newline="") as f:
         writer = csv.writer(f)
         writer.writerows(features)
 
@@ -41,3 +41,5 @@ def extract_files_train_ml():
 
 if __name__ == '__main__':
     extract_files_train_ml()
+
+    
