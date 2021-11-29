@@ -287,10 +287,8 @@ SELLER: "RJ Reynolds Tobacco USA" / "Rj Reynolds Tobacco USA"
 STATUS: "definitive agreement"
 
 TEXT: 16695
-ACQUIRED: "SystemOne Direct Access Inc"
-ACQUIRED: "EAL Automation Systems Inc"
-ACQBUS: "travel agency automation"
-ACQBUS: "computer and communications support"
+ACQUIRED: "SystemOne Direct Access Inc" / "EAL Automation Systems Inc"
+ACQBUS: "travel agency automation" / "computer and communications support"
 ACQLOC: ---
 DLRAMT: ---
 PURCHASER: "SystemOne Corp"
@@ -302,8 +300,7 @@ ACQUIRED: "Blasius Industries Inc"
 ACQBUS: ---
 ACQLOC: ---
 DLRAMT: ---
-PURCHASER: "Fidelity International Ltd"
-PURCHASER: "American Values III N.V."
+PURCHASER: "Fidelity International Ltd" / "American Values III N.V."
 SELLER: ---
 STATUS: "acquired"
 
@@ -393,8 +390,7 @@ ACQUIRED: "UNC Inc"
 ACQBUS: ---
 ACQLOC: ---
 DLRAMT: ---
-PURCHASER: "Dillon, Read and Co Inc"
-PURCHASER: "Donaldson, Lufkin and Jenrette Securities Corp"
+PURCHASER: "Dillon, Read and Co Inc" / "Donaldson, Lufkin and Jenrette Securities Corp"
 SELLER: "Chevron Corp"
 STATUS: ---
 
@@ -468,8 +464,7 @@ ACQLOC: ---
 DLRAMT: "1.51 mln dlrs"
 PURCHASER: "Atlantis Group Inc"
 SELLER: ---
-STATUS: "bought"
-STATUS: "may seek control"
+STATUS: "may seek control" / "bought"
 
 TEXT: 2325
 ACQUIRED: "Newport Beach Art Supply Center"
@@ -535,8 +530,7 @@ SELLER: "Harris Associates L.P."
 STATUS: ---
 
 TEXT: 3295
-ACQUIRED: "Debbie's School of Beauty Culture Inc"
-ACQUIRED: "Ultra Precise Beauty Boutique Inc"
+ACQUIRED: "Debbie's School of Beauty Culture Inc" / "Ultra Precise Beauty Boutique Inc"
 ACQBUS: ---
 ACQLOC: ---
 DLRAMT: "2,533,000 dlrs"
@@ -806,19 +800,16 @@ SELLER: "Allied Supermarkets Inc"
 STATUS: "definitive agreement"
 
 TEXT: 8370
-ACQUIRED: "Neville Lewis Associates"
-ACQUIRED: "Walker Associates Inc"
+ACQUIRED: "Neville Lewis Associates" / "Walker Associates Inc"
 ACQBUS: ---
-ACQLOC: "New York"
-ACQLOC: "L.A."
+ACQLOC: "New York" / "L.A."
 DLRAMT: "undisclosed"
 PURCHASER: "PHH Group Inc"
 SELLER: ---
 STATUS: "acquired"
 
 TEXT: 840
-ACQUIRED: "DataGene Scientific Laboratories Inc"
-ACQUIRED: "Milex Corp"
+ACQUIRED: "DataGene Scientific Laboratories Inc" / "Milex Corp"
 ACQBUS: ---
 ACQLOC: ---
 DLRAMT: ---
@@ -841,15 +832,11 @@ ACQBUS: "specialty insulation installation and asbestos removal"
 ACQLOC: ---
 DLRAMT: ---
 PURCHASER: "J.M. RESOURCES INC" / "J.M. Resources Inc"
-SELLER: "InterFirst Venture Corp"
-SELLER: "Sam B. Myers"
-SELLER: "Neomar Resources Inc"
-SELLER: "Richard L. Morgan"
+SELLER: "InterFirst Venture Corp" / "Richard L. Morgan" / "Sam B. Myers" / "Neomar Resources Inc"
 STATUS: "acquired"
 
 TEXT: 8795
-ACQUIRED: "Interlake Steamship Co"
-ACQUIRED: "Moore McCormack Bulk Transport Inc"
+ACQUIRED: "Interlake Steamship Co" / "Moore McCormack Bulk Transport Inc"
 ACQBUS: "bulk shipping"
 ACQLOC: ---
 DLRAMT: ---
