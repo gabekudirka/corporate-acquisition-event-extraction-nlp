@@ -1,7 +1,14 @@
 import os
-import spacy
 import json
+import spacy
 from spacy.tokens.doc import Doc
+import string
+import networkx as nx
+from sklearn.preprocessing import OneHotEncoder
+import csv
+import gensim.downloader
+import numpy as np
+import re
 
 class Entity:
     def __init__(self, entity):
@@ -12,6 +19,12 @@ class Entity:
         self.refers_to = None
         self.referred_by = None
         self.is_reference = False
+
+    def create_entity_feature_vec(self):
+        pass
+
+spacy_model = spacy.load('en_core_web_trf')
+gensim_model = gensim.downloader.load('glove-wiki-gigaword-50')
 
 class TestDocument:
     def __init__ (self, doc_filepath):
@@ -62,11 +75,15 @@ class TestDocument:
                     valid_entities[inner_entity].is_reference = True
 
         #set entity dicts for each type
-        self.loc_entities = {entity[0]: entity[1] for entity in valid_entities.items() if entity[1].label == 'LOC' or entity[1].label == 'GPE'}
+        self.loc_entities = {entity[0]: entity[1] for entity in valid_entities.items() if entity[1].label == 'LOC' or entity[1].label == 'GPE' or entity[1].label == 'LANGUAGE'}
         self.money_entities = {entity[0]: entity[1] for entity in valid_entities.items() if entity[1].label == 'MONEY'}
         self.acquired_entities = {entity[0]: entity[1] for entity in valid_entities.items() if entity[1].label == 'ORG' or entity[1].label == 'FACILITY'}
         self.buyer_seller_entities = {entity[0]: entity[1] for entity in valid_entities.items() if entity[1].label == 'ORG' or entity[1].label == 'PERSON'}
         self.entities = valid_entities
+
+    def process_entities_new(self, entities):
+        valid_entities = []
+
 
     def get_acquired(self):
         for entity in self.entities:
@@ -125,3 +142,9 @@ class TestDocument:
         f.write('SELLER: ' + self.seller + '\n') 
         f.write('STATUS: ' + self.status + '\n \n')
         f.close()
+
+
+if __name__ == '__main__':
+    test_doc = TestDocument("./data/docs/2434")
+    features = test_doc.get_feature_vector()
+    print(features)

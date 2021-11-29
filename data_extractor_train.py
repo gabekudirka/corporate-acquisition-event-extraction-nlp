@@ -2,12 +2,12 @@ import spacy
 from spacy.tokens.doc import Doc
 from data_extractor_test import Entity
 import string
-from functools import cache
 import networkx as nx
 from sklearn.preprocessing import OneHotEncoder
 import csv
 import gensim.downloader
 import numpy as np
+import re
 
 class FeatureVector:
     def __init__(self, text, dep, pos, head_text, head_pos, head_dep, next_verb, sentence):
@@ -49,29 +49,70 @@ class TrainDocument:
 
     def read_ans(self, filepath):
         ans_raw = open(filepath, "r").readlines()
-        self.text = ans_raw[0][6:].strip()
-        
         self.true_slots = {}
-        self.acquired = ans_raw[1][10:].strip().strip('"')
-        self.true_slots[self.acquired] = 'acquired'
 
-        self.acqbus = ans_raw[2][8:].strip().strip('"')
-        self.true_slots[self.acqbus] = 'acqbus'
-
-        self.acqloc = ans_raw[3][8:].strip().strip('"')
-        self.true_slots[self.acqloc] = 'acqloc'
-
-        self.drlamt = ans_raw[4][8:].strip().strip('"')
-        self.true_slots[self.drlamt] = 'drlamt'
-
-        self.purchaser = ans_raw[5][11:].strip().strip('"')
-        self.true_slots[self.purchaser] = 'purchaser'
-
-        self.seller = ans_raw[6][8:].strip().strip('"')
-        self.true_slots[self.seller] = 'seller'
-
-        self.status = ans_raw[7][8:].strip().strip('"')
-        self.true_slots[self.status] = 'status'
+        for line in ans_raw:
+            line_tokens = line.split()
+            if len(line_tokens) <= 0:
+                continue
+            if line_tokens[0] == 'TEXT:':
+                self.text = ans_raw[0][6:].strip()
+            elif line_tokens[0] == 'ACQUIRED:':
+                entities = re.findall('"([^"]*)"', line)
+                if len(entities) == 0:
+                    self.acqbus = '---'
+                    continue
+                for entity in entities:
+                    self.true_slots[entity] = 'acquired'
+                self.acquired = entities[0]
+            elif line_tokens[0] == 'ACQBUS:':
+                entities = re.findall('"([^"]*)"', line)
+                if len(entities) == 0:
+                    self.acqbus = '---'
+                    continue
+                for entity in entities:
+                    self.true_slots[entity] = 'acqbus'
+                self.acqbus = entities[0]
+            elif line_tokens[0] == 'ACQLOC:':
+                entities = re.findall('"([^"]*)"', line)
+                if len(entities) == 0:
+                    self.acqbus = '---'
+                    continue
+                for entity in entities:
+                    self.true_slots[entity] = 'acqloc'
+                self.acqloc = entities[0]
+            elif line_tokens[0] == 'DLRAMT:':
+                entities = re.findall('"([^"]*)"', line)
+                if len(entities) == 0:
+                    self.acqbus = '---'
+                    continue
+                for entity in entities:
+                    self.true_slots[entity] = 'drlamt'
+                self.drlamt = entities[0]
+            elif line_tokens[0] == 'PURCHASER:':
+                entities = re.findall('"([^"]*)"', line)
+                if len(entities) == 0:
+                    self.acqbus = '---'
+                    continue
+                for entity in entities:
+                    self.true_slots[entity] = 'purchaser'
+                self.purchaser = entities[0]
+            elif line_tokens[0] == 'SELLER:':
+                entities = re.findall('"([^"]*)"', line)
+                if len(entities) == 0:
+                    self.acqbus = '---'
+                    continue
+                for entity in entities:
+                    self.true_slots[entity] = 'seller'
+                self.seller = entities[0]
+            elif line_tokens[0] == 'STATUS:':
+                entities = re.findall('"([^"]*)"', line)
+                if len(entities) == 0:
+                    self.acqbus = '---'
+                    continue
+                for entity in entities:
+                    self.true_slots[entity] = 'status'
+                self.status = entities[0]
 
     def get_status(self):
         return self.status
@@ -183,7 +224,7 @@ class TrainDocument:
 
         sentences = [self.nlp(sentence.text) for sentence in list(self.spacy_doc.sents)[:3]]
         feature_vectors = []
-        sentences_to_consider = min(len(sentences) - 1, 3)
+        sentences_to_consider = min(len(sentences), 3)
         for i in range(sentences_to_consider):
             feature_vectors.append(self.process_chunks(sentences[i].noun_chunks, sentences[i]))
             for feature_vec in feature_vectors[i]:
@@ -199,7 +240,13 @@ class TrainDocument:
         self.feature_vectors = [vector for sublist in feature_vectors for vector in sublist]
 
     def process_chunks(self, chunks, sentence):
-        tokenized_true_slots = {slot[1]: (slot[0], []) for slot in self.true_slots.items()}
+        tokenized_true_slots = {}
+        for item in self.true_slots.items():
+            if item[1] in tokenized_true_slots.keys():
+                tokenized_true_slots[item[1]][0].append(item[0])
+                continue
+            tokenized_true_slots[item[1]] = ([item[0]], [])
+
         feature_vector_list = []
         #This loop finds all found noun phrases that are like the gold slots
         #Adds noun phrases that are not like the gold slots to the feature vector list
@@ -222,38 +269,38 @@ class TrainDocument:
             
         #Make sure that all of the gold slots are added to the list with labels
         for slot in tokenized_true_slots.keys():
-            slot_entity =  tokenized_true_slots[slot][0]
-            if slot_entity == '---':
-                continue
-            
-            #If a noun phrase is found with the exact same text as gold slot, set label and add it to list
-            gold_vec = self.match_with_gold_text(slot_entity, tokenized_true_slots[slot][1])
-            if gold_vec != None:
-                gold_vec.label = slot
-                feature_vector_list.append(gold_vec)
-                continue
-                    
-            #If no noun phrase is found with the exact same text as gold slot, find the gold slot in the doc manually
-            #and add it to the feature list
-            slot_entity_tokens = slot_entity.split()
-            indexes = self.get_location_sentence(sentence, slot_entity)
-            if indexes[0] != -1:
-                token = sentence[indexes[-1] - 1]
-                feature_vec = FeatureVector(tokenized_true_slots[slot][0], token.dep_, token.pos_, token.head.text, token.head.pos_, 
-                                            token.head.dep_, self.get_next_verb(token, sentence, ischunk=False), sentence)
-                feature_vec.label = slot
-                feature_vector_list.append(feature_vec)
-            #If we can't find the gold slot manually (for some reason), use a related noun phrase vector with gold phrase as text
-            else:
-                for feature_vec in tokenized_true_slots[slot][1]:
-                    if feature_vec.text in self.entities.keys() and self.entities[feature_vec.text].is_reference == True:
-                        continue
-                    else:
-                        feature_vec = tokenized_true_slots[slot][1][0]
-                        feature_vec.label = slot
-                        feature_vec.text = tokenized_true_slots[slot][0]
-                        feature_vector_list.append(feature_vec)
-                        break
+            slot_entities =  tokenized_true_slots[slot][0]
+            for slot_entity in slot_entities:
+                if slot_entity == '---':
+                    continue
+                
+                #If a noun phrase is found with the exact same text as gold slot, set label and add it to list
+                gold_vec = self.match_with_gold_text(slot_entity, tokenized_true_slots[slot][1])
+                if gold_vec != None:
+                    gold_vec.label = slot
+                    feature_vector_list.append(gold_vec)
+                    continue
+                        
+                #If no noun phrase is found with the exact same text as gold slot, find the gold slot in the doc manually
+                #and add it to the feature list
+                indexes = self.get_location_sentence(sentence, slot_entity)
+                if indexes[0] != -1:
+                    token = sentence[indexes[-1] - 1]
+                    feature_vec = FeatureVector(slot_entity, token.dep_, token.pos_, token.head.text, token.head.pos_, 
+                                                token.head.dep_, self.get_next_verb(token, sentence, ischunk=False), sentence)
+                    feature_vec.label = slot
+                    feature_vector_list.append(feature_vec)
+                #If we can't find the gold slot manually (for some reason), use a related noun phrase vector with gold phrase as text
+                # else:
+                #     for feature_vec in tokenized_true_slots[slot][1]:
+                #         if feature_vec.text in self.entities.keys() and self.entities[feature_vec.text].is_reference == True:
+                #             continue
+                #         else:
+                #             feature_vec = tokenized_true_slots[slot][1][0]
+                #             feature_vec.label = slot
+                #             feature_vec.text = slot_entity
+                #             feature_vector_list.append(feature_vec)
+                #             break
                 
         return feature_vector_list
 
@@ -275,7 +322,7 @@ class TrainDocument:
         if ischunk:
             target = target.root
 
-        edges = []
+        edges = [] 
         for token in sentence:
             for child in token.children:
                 edges.append((token, child))
@@ -312,7 +359,7 @@ class TrainDocument:
         return valid_entities
 
 if __name__ == '__main__':
-    test_doc = TrainDocument("./data/docs/11996", "./data/anskeys/11996.key", get_ml_features=True)
+    test_doc = TrainDocument("./data/docs/2434", "./data/anskeys/2434.key", get_ml_features=True)
     features = test_doc.get_feature_vector()
     with open('output_test.csv', 'a', newline="") as f:
             writer = csv.writer(f)
