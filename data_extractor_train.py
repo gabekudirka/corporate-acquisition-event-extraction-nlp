@@ -133,6 +133,35 @@ class TrainDocument:
             feature_vecs_output.append(feature_vec_output)
         return feature_vecs_output
 
+    def one_hot_encode(self):
+        possible_pos_arr = ['PROPN', 'NUM', 'SPACE', 'ADJ', 'PART', 'PUNCT', 'AUX', 'PRON', 'VERB', 'CCONJ', 'ADP', 'ADV', 'NOUN', 'DET', 'SCONJ']
+        possible_dep_arr = ['amod', 'relcl', 'dobj', 'agent', 'appos', 'prep', 'dep', 'cc', 'attr', 'acl', 'auxpass', 'compound', 'advmod', 'ROOT', 'nmod', 'case', 'conj', 'ccomp', 'poss', 'nsubj', 'det', 'pcomp', 'npadvmod', 'aux', 'xcomp', 'oprd', 'parataxis', 'nsubjpass', 'punct', 'dative', 'quantmod', 'acomp', 'nummod', 'pobj', 'neg', 'advcl']
+        possible_ent_labels_arr = ['nonent', 'ORG', 'GPE', 'PERSON', 'FAC', 'WORK_OF_ART', 'LANGUAGE', 'MONEY']
+        possible_pos = {}
+        possible_dep = {}
+        possible_ent_labels = {}
+        for i, pos in enumerate(possible_pos_arr):
+            possible_pos[pos] = i
+        for i, dep in enumerate(possible_dep_arr):
+            possible_dep[dep] = i
+        for i, ent_label in enumerate(possible_ent_labels_arr):
+            possible_ent_labels[ent_label] = i
+
+        for feature_vec in self.feature_vectors:
+            feature_vec.dep_one_hot = np.zeros(len(possible_dep_arr)).tolist()
+            feature_vec.head_pos_one_hot = np.zeros(len(possible_pos_arr)).tolist()
+            feature_vec.head_dep_one_hot = np.zeros(len(possible_dep_arr)).tolist()
+            feature_vec.ent_label_one_hot = np.zeros(len(possible_ent_labels_arr)).tolist()
+
+            if self.dep in possible_dep:
+                self.dep_one_hot[possible_dep[self.dep]] = 1
+            if self.head_pos in possible_pos:
+                self.head_pos_one_hot[possible_pos[self.head_pos]] = 1
+            if self.head_dep in possible_dep:
+                self.head_dep_one_hot[possible_dep[self.head_dep]] = 1
+            if self.entity_label in possible_ent_labels:
+                self.ent_label_one_hot[possible_ent_labels[self.entity_label]] = 1
+
     def get_location_sentence(self, sentence, phrase):
         try:
             start_index = sentence.text.index(phrase)
@@ -185,15 +214,6 @@ class TrainDocument:
 
         return sliding_window
 
-    def one_hot_encode(self, feature_vec):
-        POS_categories = ['ADJ', 'ADP', 'ADV', 'AUX', 'CONJ', 'CCONJ', 'DET', 'INTJ', 'NOUN', 'NUM', 'PART', 'PRON', 'PROPN', 'PUNCT', 'SCONJ', 'SYM', 'VERB', 'X']
-        dep_categories = ['acl', 'advcl', 'advmod', 'amod', 'appos', 'aux', 'case', 'cc', 'ccomp', 'clf', 'compound', 'conj', 'cop', 'csubj', 'dep', 'det', 'discourse', 'dislocated', 'expl', 'fixed', 'flat', 'goeswith', 'iobj', 'list', 'mark', 'nmod', 'nsubj', 'nummod', 'obj', 'obl', 'orphan', 'parataxis', 'punct', 'reparandum', 'root', 'vocative', 'xcomp']
-        label_categories = ['acquired', 'acqbus', 'acqloc', 'drlamt', 'purchaser', 'seller', 'status', 'none']
-        entity_categories = ['nonent', 'PERSON', 'NORP', 'FACILITY', 'FAC', 'ORG', '']
-        one_hot_encoder = OneHotEncoder(sparse=False)
-        one_hot_encoded = one_hot_encoder.fit_transform([feature_vec])
-        return one_hot_encoded
-
     def get_word_embeddings(self, word):
         if len(word.split()) == 1:
             word = word.translate(str.maketrans('', '', string.punctuation))
@@ -238,6 +258,8 @@ class TrainDocument:
                 feature_vec.sliding_window = self.get_sliding_window(feature_vec)
 
         self.feature_vectors = [vector for sublist in feature_vectors for vector in sublist]
+        self.one_hot_encode()
+        x = 1
 
     def process_chunks(self, chunks, sentence):
         tokenized_true_slots = {}
