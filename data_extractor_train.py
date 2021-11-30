@@ -27,7 +27,7 @@ class FeatureVector:
         self.sentence = sentence
 
 spacy_model = spacy.load('en_core_web_trf')
-gensim_model = gensim.downloader.load('glove-wiki-gigaword-50')
+gensim_model = gensim.downloader.load('glove-wiki-gigaword-100')
 
 class TrainDocument:
     def __init__ (self, doc_filepath, ans_filepath, get_ml_features=False):
@@ -120,15 +120,20 @@ class TrainDocument:
     def get_feature_vector(self):
         feature_vecs_output = []
         for feature_vec in self.feature_vectors:
-            feature_vec_output = [feature_vec.label, feature_vec.dep, feature_vec.pos, feature_vec.head_pos, feature_vec.head_dep, 
-                                  feature_vec.entity_label, feature_vec.frequency_in_doc, feature_vec.sentence_loc, feature_vec.sentence_num]
+            feature_vec_output = [feature_vec.label, feature_vec.frequency_in_doc, feature_vec.sentence_loc, feature_vec.sentence_num]
+            feature_vec_output.extend(feature_vec.dep_one_hot)
+            feature_vec_output.extend(feature_vec.head_pos_one_hot)
+            feature_vec_output.extend(feature_vec.head_dep_one_hot)
+            feature_vec_output.extend(feature_vec.ent_label_one_hot)
 
-            feature_vec_output.extend(self.get_word_embeddings(feature_vec.text))
-            feature_vec_output.extend(self.get_word_embeddings(feature_vec.head_text))
-            feature_vec_output.extend(self.get_word_embeddings(feature_vec.next_verb))
-            
-            for word in feature_vec.sliding_window:
-                feature_vec_output.extend(self.get_word_embeddings(word))
+            feature_vec.text_embedding = self.get_word_embeddings(feature_vec.text)
+            feature_vec.head_text_embedding = self.get_word_embeddings(feature_vec.head_text)
+            feature_vec.next_verb_embedding = self.get_word_embeddings(feature_vec.next_verb)
+            feature_vec_output.extend(feature_vec.text_embedding)
+            feature_vec_output.extend(feature_vec.head_text_embedding)
+            feature_vec_output.extend(feature_vec.next_verb_embedding)
+            for phrase in feature_vec.sliding_window:
+                feature_vec_output.extend(self.get_word_embeddings(phrase))
 
             feature_vecs_output.append(feature_vec_output)
         return feature_vecs_output
@@ -153,14 +158,14 @@ class TrainDocument:
             feature_vec.head_dep_one_hot = np.zeros(len(possible_dep_arr)).tolist()
             feature_vec.ent_label_one_hot = np.zeros(len(possible_ent_labels_arr)).tolist()
 
-            if self.dep in possible_dep:
-                self.dep_one_hot[possible_dep[self.dep]] = 1
-            if self.head_pos in possible_pos:
-                self.head_pos_one_hot[possible_pos[self.head_pos]] = 1
-            if self.head_dep in possible_dep:
-                self.head_dep_one_hot[possible_dep[self.head_dep]] = 1
-            if self.entity_label in possible_ent_labels:
-                self.ent_label_one_hot[possible_ent_labels[self.entity_label]] = 1
+            if feature_vec.dep in possible_dep:
+                feature_vec.dep_one_hot[possible_dep[feature_vec.dep]] = 1
+            if feature_vec.head_pos in possible_pos:
+                feature_vec.head_pos_one_hot[possible_pos[feature_vec.head_pos]] = 1
+            if feature_vec.head_dep in possible_dep:
+                feature_vec.head_dep_one_hot[possible_dep[feature_vec.head_dep]] = 1
+            if feature_vec.entity_label in possible_ent_labels:
+                feature_vec.ent_label_one_hot[possible_ent_labels[feature_vec.entity_label]] = 1
 
     def get_location_sentence(self, sentence, phrase):
         try:
@@ -183,7 +188,6 @@ class TrainDocument:
         indexes = self.get_location_sentence(sentence, phrase)
 
         sliding_window = []
-        l = len(sentence_tokens)
         try:
             if indexes[0] == 0 or indexes[0] == -1:
                 sliding_window.append('phi2')
@@ -259,7 +263,6 @@ class TrainDocument:
 
         self.feature_vectors = [vector for sublist in feature_vectors for vector in sublist]
         self.one_hot_encode()
-        x = 1
 
     def process_chunks(self, chunks, sentence):
         tokenized_true_slots = {}

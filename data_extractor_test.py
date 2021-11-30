@@ -8,6 +8,7 @@ import csv
 import gensim.downloader
 import numpy as np
 import string
+import pickle
 
 class Entity:
     def __init__(self, entity):
@@ -67,9 +68,17 @@ class FeatureExtractor():
         self.one_hot_encode()
 
     def get_feature_vector(self):
-        feature_vec_output = [self.freq_in_doc, self.sentence_loc, self.sentence_num, self.dep_one_hot, self.head_pos_one_hot,
-                              self.head_dep_one_hot, self.ent_label_one_hot, self.text_embedding, self.head_text_embedding, self.next_verb_embedding]
-        feature_vec_output.extend(self.sliding_window_embeddings)
+        feature_vec_output = [self.freq_in_doc, self.sentence_loc, self.sentence_num]
+        
+        feature_vec_output.extend(self.dep_one_hot)
+        feature_vec_output.extend(self.head_pos_one_hot)
+        feature_vec_output.extend(self.head_dep_one_hot)
+        feature_vec_output.extend(self.ent_label_one_hot)
+        feature_vec_output.extend(self.text_embedding)
+        feature_vec_output.extend(self.head_text_embedding)
+        feature_vec_output.extend(self.next_verb_embedding)
+        for embedding in self.sliding_window_embeddings:
+            feature_vec_output.extend(embedding)
 
         return feature_vec_output
 
@@ -86,7 +95,7 @@ class FeatureExtractor():
             possible_dep[dep] = i
         for i, ent_label in enumerate(possible_ent_labels_arr):
             possible_ent_labels[ent_label] = i
-        
+
         self.dep_one_hot = np.zeros(len(possible_dep_arr)).tolist()
         self.head_pos_one_hot = np.zeros(len(possible_pos_arr)).tolist()
         self.head_dep_one_hot = np.zeros(len(possible_dep_arr)).tolist()
@@ -192,17 +201,9 @@ spacy_model = spacy.load('en_core_web_trf')
 class TestDocument:
     def __init__ (self, doc_filepath):
         self.doc = self.read_doc(doc_filepath)
-        self.process_doc()
-
-        self.used_entities = []
+        self.classifier = pickle.load(open('model_1.sav', 'rb'))
         self.text = os.path.basename(doc_filepath)
-        self.acquired = self.get_acquired()
-        self.acqbus = '---'
-        self.acqloc = self.get_acqloc()
-        self.drlamt = self.get_drlamt()
-        self.purchaser = self.get_purchaser()
-        self.seller = self.get_seller()
-        self.status = self.set_status(doc_filepath)
+        self.process_doc()
 
     def read_doc(self, filepath):
         text_raw = open(filepath, "r").read()
@@ -224,11 +225,6 @@ class TestDocument:
                     valid_entities[inner_entity].refers_to = outer_entity
                     valid_entities[inner_entity].is_reference = True
 
-        #set entity dicts for each type
-        # self.loc_entities = {entity[0]: entity[1] for entity in valid_entities.items() if entity[1].label == 'LOC' or entity[1].label == 'GPE' or entity[1].label == 'LANGUAGE'}
-        # self.money_entities = {entity[0]: entity[1] for entity in valid_entities.items() if entity[1].label == 'MONEY'}
-        # self.acquired_entities = {entity[0]: entity[1] for entity in valid_entities.items() if entity[1].label == 'ORG' or entity[1].label == 'FACILITY'}
-        # self.buyer_seller_entities = {entity[0]: entity[1] for entity in valid_entities.items() if entity[1].label == 'ORG' or entity[1].label == 'PERSON'}
         return valid_entities
 
     def process_doc(self):
@@ -258,12 +254,76 @@ class TestDocument:
             self.seller_candidates.extend(self.get_possible_purchaser_seller(sent_ents, sentence, i, sent_chunks))
             self.status_candidates.extend(self.get_possible_status(sentence, i, sent_chunks))
 
-        sentence = self.nlp(self.sentences[0].text)
-        # chunks = [(chunk.text, chunk.root.text, chunk.root.dep_,
-        #     chunk.root.head.text) for chunk in sentence.noun_chunks]
+        self.acquired_vectors = [vec.get_feature_vector() for vec in self.acquired_candidates]
+        self.acqbus_vectors = [vec.get_feature_vector() for vec in self.acqbus_candidates]
+        self.acqloc_vectors = [vec.get_feature_vector() for vec in self.acqloc_candidates]
+        self.drlamt_vectors = [vec.get_feature_vector() for vec in self.drlamt_candidates]
+        self.purchaser_vectors = [vec.get_feature_vector() for vec in self.purchaser_candidates]
+        self.seller_vectors = [vec.get_feature_vector() for vec in self.seller_candidates]
+        self.status_vectors = [vec.get_feature_vector() for vec in self.status_candidates]
 
-        self.chunks = list(sentence.noun_chunks)
-        self.chunks_text = [chunk.text for chunk in self.chunks]
+        #Make predictions!
+        acquired_pred_idx = self.predict_slot(self.acquired_vectors, 0, 'acquired')
+        if acquired_pred_idx == -1:
+            self.acquired = '---'
+        else:
+            self.acquired = '\"' + self.acquired_candidates[acquired_pred_idx].text + '\"'
+        
+        acqbus_pred_idx = self.predict_slot(self.acqbus_vectors, 1, 'acqbus')
+        if acqbus_pred_idx == -1:
+            self.acqbus = '---'
+        else:
+            self.acqbus = '\"' + self.acqbus_candidates[acqbus_pred_idx].text + '\"'
+
+        acqloc_pred_idx = self.predict_slot(self.acqloc_vectors, 2, 'acqloc')
+        if acqloc_pred_idx == -1:
+            self.acqloc = '---'
+        else:
+            self.acqloc = '\"' + self.acqloc_candidates[acqloc_pred_idx].text + '\"'
+        
+        drlamt_pred_idx = self.predict_slot(self.drlamt_vectors, 3, 'drlamt')
+        if drlamt_pred_idx == -1:
+            self.drlamt = '---'
+        else:
+            self.drlamt = '\"' + self.drlamt_candidates[drlamt_pred_idx].text + '\"'
+        
+        purchaser_pred_idx = self.predict_slot(self.purchaser_vectors, 4, 'purchaser')
+        if purchaser_pred_idx == -1:
+            self.purchaser = '---'
+        else:
+            self.purchaser = '\"' + self.purchaser_candidates[purchaser_pred_idx].text + '\"'
+
+        seller_pred_idx = self.predict_slot(self.seller_vectors, 5, 'seller')
+        if seller_pred_idx == -1:
+            self.seller = '---'
+        else:
+            self.seller = '\"' + self.seller_candidates[seller_pred_idx].text + '\"'
+
+        status_pred_idx = self.predict_slot(self.status_vectors, 6, 'status')
+        if status_pred_idx == -1:
+            self.status = '---'
+        else:
+            self.status = '\"' + self.status_candidates[status_pred_idx].text + '\"'
+        
+
+    def predict_slot(self, vectors, threshold, slot_type):
+        labels = {'acqbus': 0, 'acqloc': 1, 'acquired': 2, 'drlamt': 3, 'none': 4, 'purchaser': 5, 'seller': 6, 'status': 7}
+        predict_slot = labels[slot_type]
+        if len(vectors) == 0:
+            return -1
+    
+        probs = self.classifier.predict_log_proba(np.array(vectors).astype(float))
+        preds = self.classifier.predict(np.array(vectors).astype(float))
+        
+        preds = [i for i, pred in enumerate(preds) if pred == predict_slot]
+        probs = {probs[i][predict_slot]: i for i in preds}
+
+        if len(probs) == 0:
+            return -1
+        best_prob = max(list(probs.keys()))
+        x = probs[best_prob]
+        return probs[best_prob]
+
 
     def match_to_chunk(self, entity_text, chunks, sentence):
         #Try to match entity to chunk with exact text
@@ -360,39 +420,6 @@ class TestDocument:
             loc_candidates.append(FeatureExtractor(chunk, self.doc, sentence, sent_idx, entity=status_ent))
         return loc_candidates
 
-    def get_acquired(self):
-        for entity in self.entities:
-            if entity.label == 'ORG' or entity.label == 'FACILITY':
-                self.used_entities.append(entity.text)
-                return '\"' + entity.text + '\"'
-        return '---'
-
-    def get_acqloc(self):
-        for entity in self.entities:
-            if entity.label_ == 'GPE' or entity.label_ == 'LOC':
-                return '\"' + entity.text + '\"'
-        return '---'
-
-    def get_drlamt(self):
-        for entity in self.entities:
-            if entity.label_ == 'MONEY':
-                return '\"' + entity.text + '\"'
-        return '---'
-
-    def get_purchaser(self):
-        for entity in self.entities:
-            if entity.label_ == 'ORG' or entity.label_ == 'PERSON':
-                if entity.text not in self.used_entities:
-                    return '\"' + entity.text + '\"'
-        return '---'
-
-    def get_seller(self):
-        for entity in self.entities:
-            if entity.label_ == 'ORG' or entity.label_ == 'PERSON':
-                if entity.text not in self.used_entities:
-                    return '\"' + entity.text + '\"'
-        return '---'
-
     def set_status(self, filepath):
         with open('all_statuses.json') as statuses_json:
             status_dict = json.load(statuses_json)
@@ -421,5 +448,4 @@ class TestDocument:
 
 if __name__ == '__main__':
     test_doc = TestDocument("./data/docs/19683")
-    features = test_doc.get_feature_vector()
-    print(features)
+    x = 1
