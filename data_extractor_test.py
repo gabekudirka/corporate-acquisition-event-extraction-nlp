@@ -3,6 +3,16 @@ import spacy
 import json
 from spacy.tokens.doc import Doc
 
+class Entity:
+    def __init__(self, entity):
+        self.name = entity.text
+        self.label = entity.label_
+        self.start = entity.start_char
+        self.end = entity.end_char
+        self.refers_to = None
+        self.referred_by = None
+        self.is_reference = False
+
 class TestDocument:
     def __init__ (self, doc_filepath):
         self.doc = self.read_doc(doc_filepath)
@@ -18,22 +28,45 @@ class TestDocument:
         self.seller = self.get_seller()
         self.status = self.set_status(doc_filepath)
 
+    def read_doc(self, filepath):
+        text_raw = open(filepath, "r").read()
+        return text_raw.replace('\n', ' ').strip();
+
     def process_doc(self):
         nlp = spacy.load("en_core_web_trf")
         doc = nlp(self.doc)
         self.processed_doc = doc
 
-        valid_entities = []
-        for entity in doc.ents:
-            if 'and' not in entity.text:
-                entity.label_ = entity.label_.strip()
-                valid_entities.append(entity)
-            
+        self.process_entities(doc.ents)
+        self.sentences = [sentence for sentence in doc.sents]
+
+        sentence = nlp(self.sentences[0].text)
+        chunks = [(chunk.text, chunk.root.text, chunk.root.dep_,
+            chunk.root.head.text) for chunk in sentence.noun_chunks]
+
+        self.chunks = sentence.noun_chunks
+        self.chunks_text = [chunk.text for chunk in self.chunks]
+
+    #Format and set entities
+    def process_entities(self, entities):
+        valid_entities = {entity.text: Entity(entity) for entity in entities}
+
+        for outer_entity in valid_entities.keys():
+            for inner_entity in valid_entities.keys():
+                if outer_entity == inner_entity or valid_entities[outer_entity].is_reference:
+                    continue
+                #Check if entities refer to one another
+                if inner_entity in outer_entity:
+                    valid_entities[outer_entity].referred_by = inner_entity
+                    valid_entities[inner_entity].refers_to = outer_entity
+                    valid_entities[inner_entity].is_reference = True
+
+        #set entity dicts for each type
+        self.loc_entities = {entity[0]: entity[1] for entity in valid_entities.items() if entity[1].label == 'LOC' or entity[1].label == 'GPE'}
+        self.money_entities = {entity[0]: entity[1] for entity in valid_entities.items() if entity[1].label == 'MONEY'}
+        self.acquired_entities = {entity[0]: entity[1] for entity in valid_entities.items() if entity[1].label == 'ORG' or entity[1].label == 'FACILITY'}
+        self.buyer_seller_entities = {entity[0]: entity[1] for entity in valid_entities.items() if entity[1].label == 'ORG' or entity[1].label == 'PERSON'}
         self.entities = valid_entities
-        
-    def read_doc(self, filepath):
-        text_raw = open(filepath, "r").read()
-        return text_raw.replace('\n', ' ').strip();
 
     def get_acquired(self):
         for entity in self.entities:
