@@ -225,6 +225,11 @@ class TestDocument:
                     valid_entities[inner_entity].refers_to = outer_entity
                     valid_entities[inner_entity].is_reference = True
 
+        #set entity dicts for each type
+        # self.loc_entities = {entity[0]: entity[1] for entity in valid_entities.items() if entity[1].label == 'LOC' or entity[1].label == 'GPE' or entity[1].label == 'LANGUAGE'}
+        # self.money_entities = {entity[0]: entity[1] for entity in valid_entities.items() if entity[1].label == 'MONEY'}
+        # self.acquired_entities = {entity[0]: entity[1] for entity in valid_entities.items() if entity[1].label == 'ORG' or entity[1].label == 'FACILITY'}
+        # self.buyer_seller_entities = {entity[0]: entity[1] for entity in valid_entities.items() if entity[1].label == 'ORG' or entity[1].label == 'PERSON'}
         return valid_entities
 
     def process_doc(self):
@@ -311,11 +316,17 @@ class TestDocument:
         predict_slot = labels[slot_type]
         if len(vectors) == 0:
             return -1
-    
+
+            # if slot_type == 'seller':
+            #     for i, candidate in enumerate(self.seller_candidates):
+            #         if candidate.sentence_num == 0 and candidate.sentence_loc == 0 and self.purchaser != candidate.text and candidate.sliding_window[2] == 'said':
+            #             return i
+
         probs = self.classifier.predict_log_proba(np.array(vectors).astype(float))
+        #best_n = np.argsort(probs, axis=1)[:,-2:]
         preds = self.classifier.predict(np.array(vectors).astype(float))
         
-        preds = [i for i, pred in enumerate(preds) if pred == predict_slot]
+        preds = [i for i, pred in enumerate(preds) if predict_slot == pred]
         probs = {probs[i][predict_slot]: i for i in preds}
 
         if len(probs) == 0:
@@ -323,6 +334,7 @@ class TestDocument:
         best_prob = max(list(probs.keys()))
         x = probs[best_prob]
         return probs[best_prob]
+
 
 
     def match_to_chunk(self, entity_text, chunks, sentence):
@@ -381,25 +393,21 @@ class TestDocument:
 
     def get_possible_drlamt(self, entities, sentence, sent_idx, chunks):
         #include dlramt processing here, including adding 'undisclosed' etc
-        used_chunks = list(entities.keys())
         drlamt_candidates = []
         for item in entities.items():
             if item[1].label == 'MONEY':
                 chunk = self.match_to_chunk(item[1].text, chunks, sentence)
                 drlamt_candidates.append(FeatureExtractor(chunk, self.doc, sentence, sent_idx, entity=item[1]))
-                used_chunks.append(chunk.text)
 
         return drlamt_candidates
 
     def get_possible_purchaser_seller(self, entities, sentence, sent_idx, chunks):
         #process purchaser and seller entities here
-        used_chunks = list(entities.keys())
         purchaser_seller_candidates = []
         for item in entities.items():
             if item[1].label == 'PERSON' or item[1].label == 'ORG' or item[1].label == 'PER' or item[1].label == 'NORP':
                 chunk = self.match_to_chunk(item[1].text, chunks, sentence)
                 purchaser_seller_candidates.append(FeatureExtractor(chunk, self.doc, sentence, sent_idx, entity=item[1]))
-                used_chunks.append(chunk.text)
 
         return purchaser_seller_candidates
 
@@ -447,5 +455,6 @@ class TestDocument:
 
 
 if __name__ == '__main__':
-    test_doc = TestDocument("./data/docs/19683")
-    x = 1
+    test_doc = TestDocument("./data/docs/18111")
+    features = test_doc.get_feature_vector()
+    print(features)

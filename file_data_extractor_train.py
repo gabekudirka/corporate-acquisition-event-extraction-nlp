@@ -18,8 +18,8 @@ def extract_files_train():
     return docs
 
 def extract_files_train_ml():
-    docs_directory = './data/docs'
-    ans_directory = './data/anskeys'
+    docs_directory = './data/testset1/testset1-docs'
+    ans_directory = './data/testset1/testset1-anskeys'
     doc_filenames = os.listdir(docs_directory)
     features = []
 
