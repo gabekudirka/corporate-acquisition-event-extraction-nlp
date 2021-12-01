@@ -1,7 +1,9 @@
 import os
 import spacy
 import json
+from spacy.tokens import Span
 from spacy.tokens.doc import Doc
+from spacy.matcher import PhraseMatcher
 
 class Entity:
     def __init__(self, entity):
@@ -30,12 +32,16 @@ class TestDocument:
 
     def read_doc(self, filepath):
         text_raw = open(filepath, "r").read()
-        return text_raw.replace('\n', ' ').strip();
+        return text_raw.replace('\n', ' ').strip()
 
     def process_doc(self):
         nlp = spacy.load("en_core_web_trf")
         doc = nlp(self.doc)
         self.processed_doc = doc
+
+        #Add custom entities
+        dlramt_phrase_list = ['undisclosed', 'not disclosed']
+        doc.ents = self.add_custom_entity(nlp, doc, dlramt_phrase_list, 'UNDSCLSD')
 
         self.process_entities(doc.ents)
         self.sentences = [sentence for sentence in doc.sents]
@@ -68,6 +74,20 @@ class TestDocument:
         self.buyer_seller_entities = {entity[0]: entity[1] for entity in valid_entities.items() if entity[1].label == 'ORG' or entity[1].label == 'PERSON'}
         self.entities = valid_entities
 
+    def add_custom_entity(self, nlp, doc, phrase_list, label):
+        matcher = PhraseMatcher(nlp.vocab)
+        phrase_patterns = [nlp(text) for text in phrase_list]
+        matcher.add(label, None, *phrase_patterns)
+        matches = matcher(doc)
+
+        if label == "UNDSCLSD":
+            lbl = doc.vocab.strings[u'UNDSCLSD']
+
+        new_ents = [Span(doc, match[1],match[2],label= lbl) for match in matches]
+        doc.ents = list(doc.ents) + new_ents
+
+        return doc.ents
+
     def get_acquired(self):
         for entity in self.entities:
             if entity.label_ == 'ORG' or entity.label_ == 'FACILITY':
@@ -77,27 +97,27 @@ class TestDocument:
 
     def get_acqloc(self):
         for entity in self.entities:
-            if entity.label_ == 'GPE' or entity.label_ == 'LOC':
+            if entity.label_ == 'GPE' or entity.label_ == 'LOC' or entity.label_ == 'LANGUAGE':
                 return '\"' + entity.text + '\"'
         return '---'
 
     def get_drlamt(self):
         for entity in self.entities:
-            if entity.label_ == 'MONEY':
+            if entity.label_ == 'MONEY' or entity.label_ == 'UNDSCLSD':
                 return '\"' + entity.text + '\"'
         return '---'
 
     def get_purchaser(self):
         for entity in self.entities:
             if entity.label_ == 'ORG' or entity.label_ == 'PERSON':
-                if entity.text not in self.used_entities:
+                #if entity.text not in self.used_entities:
                     return '\"' + entity.text + '\"'
         return '---'
 
     def get_seller(self):
         for entity in self.entities:
             if entity.label_ == 'ORG' or entity.label_ == 'PERSON':
-                if entity.text not in self.used_entities:
+                #if entity.text not in self.used_entities:
                     return '\"' + entity.text + '\"'
         return '---'
 
