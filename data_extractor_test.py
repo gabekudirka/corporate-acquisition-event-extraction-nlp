@@ -26,6 +26,16 @@ class Entity:
     def create_entity_feature_vec(self):
         pass
 
+class Entity_:
+    def __init__(self, text, label, start, end):
+        self.text = text
+        self.label = label
+        self.start = start
+        self.end = end
+        self.refers_to = None
+        self.referred_by = None
+        self.is_reference = False
+
 
 def get_location_sentence(sentence, phrase):
         try:
@@ -244,7 +254,7 @@ class TestDocument:
 
         #self.all_entities = self.process_entities(doc.ents)
 
-        sentences = [self.nlp(sentence.text) for sentence in list(self.spacy_doc.sents)[:2]]
+        sentences = [self.nlp(sentence.text) for sentence in list(self.spacy_doc.sents)[:3]]
         for i, sentence in enumerate(sentences):
             sent_ents = self.process_entities(sentence)
             sent_chunks = list(sentence.noun_chunks)
@@ -269,43 +279,43 @@ class TestDocument:
         if acquired_pred_idx == -1:
             self.acquired = '---'
         else:
-            self.acquired = '\"' + self.acquired_candidates[acquired_pred_idx].text + '\"'
+            self.acquired = '\"' + self.acquired_candidates[acquired_pred_idx].text.strip() + '\"'
         
         acqbus_pred_idx = self.predict_slot(self.acqbus_vectors, 1, 'acqbus')
         if acqbus_pred_idx == -1:
             self.acqbus = '---'
         else:
-            self.acqbus = '\"' + self.acqbus_candidates[acqbus_pred_idx].text + '\"'
+            self.acqbus = '\"' + self.acqbus_candidates[acqbus_pred_idx].text.strip() + '\"'
 
         acqloc_pred_idx = self.predict_slot(self.acqloc_vectors, 2, 'acqloc')
         if acqloc_pred_idx == -1:
             self.acqloc = '---'
         else:
-            self.acqloc = '\"' + self.acqloc_candidates[acqloc_pred_idx].text + '\"'
+            self.acqloc = '\"' + self.acqloc_candidates[acqloc_pred_idx].text.strip() + '\"'
         
         drlamt_pred_idx = self.predict_slot(self.drlamt_vectors, 3, 'drlamt')
         if drlamt_pred_idx == -1:
             self.drlamt = '---'
         else:
-            self.drlamt = '\"' + self.drlamt_candidates[drlamt_pred_idx].text + '\"'
+            self.drlamt = '\"' + self.drlamt_candidates[drlamt_pred_idx].text.strip() + '\"'
         
         purchaser_pred_idx = self.predict_slot(self.purchaser_vectors, 4, 'purchaser')
         if purchaser_pred_idx == -1:
             self.purchaser = '---'
         else:
-            self.purchaser = '\"' + self.purchaser_candidates[purchaser_pred_idx].text + '\"'
+            self.purchaser = '\"' + self.purchaser_candidates[purchaser_pred_idx].text.strip() + '\"'
 
         seller_pred_idx = self.predict_slot(self.seller_vectors, 5, 'seller')
         if seller_pred_idx == -1:
             self.seller = '---'
         else:
-            self.seller = '\"' + self.seller_candidates[seller_pred_idx].text + '\"'
+            self.seller = '\"' + self.seller_candidates[seller_pred_idx].text.strip() + '\"'
 
         status_pred_idx = self.predict_slot(self.status_vectors, 6, 'status')
         if status_pred_idx == -1:
             self.status = '---'
         else:
-            self.status = '\"' + self.status_candidates[status_pred_idx].text + '\"'
+            self.status = '\"' + self.status_candidates[status_pred_idx].text.strip() + '\"'
         
 
     def predict_slot(self, vectors, threshold, slot_type):
@@ -343,8 +353,6 @@ class TestDocument:
         return sentence[0]
 
     def get_possible_acquired(self, entities, sentence, sent_idx, chunks):
-        #process acquired entities here
-        #maybe exclude certain noun chunks that won't be acquired like 'they' etc.
         acquired_candidates = []
         used_chunks = list(entities.keys())
 
@@ -371,24 +379,48 @@ class TestDocument:
 
         return acbus_candidates
         
-    def get_possible_acqloc(self, entities, sentence, sent_idx, chunks):
-        #include noun chunks or naw?
-        #put the location concatenation code here
+    def get_possible_acqloc(self, entities, sentence, sent_idx, chunks):                                                                                                                
         used_chunks = list(entities.keys())
+        lst = []
         loc_candidates = []
-        loc_entities = []
-
         for item in entities.items():
-            if item[1].label == 'GPE' or item[1].label == 'LOC' or item[1].label == 'LANGUAGE' or item[1].label == 'NORP': #NORP is a maybe
-                loc_entities.append(item[1])
-                chunk = self.match_to_chunk(item[1].text, chunks, sentence)
-                loc_candidates.append(FeatureExtractor(chunk, self.doc, sentence, sent_idx, entity=item[1]))
-                used_chunks.append(chunk.text)
+            if item[1].label == 'GPE' or item[1].label == 'LOC' or item[1].label == 'LANGUAGE' or item[1].label == 'NORP': #NORP is a maybe                               
+                lst.append(item[1])
+
+        
+        try:
+            concatenated_locations = [loc for loc in lst]
+            for i in range(1, len(lst)):
+                if i >= len(lst):
+                    break
+                if i <= 0:
+                    break
+                current = lst[i]
+                previous = lst[i-1]
+
+                if previous.end >= (current.start - 7): 
+                    text = previous.text + sentence.text[previous.end : current.start] + current.text
+                    start = previous.start
+                    end = current.end
+                    concatenated_item = Entity_(text, 'LOC', start, end)
+                    concatenated_locations.append(concatenated_item)
+                    if previous in concatenated_locations:
+                        concatenated_locations.remove(previous)
+                    if current in concatenated_locations:
+                        concatenated_locations.remove(current)
+                lst = [loc for loc in concatenated_locations]
+        except:
+            concatenated_locations = [loc for loc in lst]
+
+        for item in concatenated_locations:
+            chunk = self.match_to_chunk(item.text, chunks, sentence)
+            loc_candidates.append(FeatureExtractor(chunk, self.doc, sentence, sent_idx, entity=item))
+            used_chunks.append(chunk.text)
+
 
         return loc_candidates
 
     def get_possible_drlamt(self, entities, sentence, sent_idx, chunks):
-        #include dlramt processing here, including adding 'undisclosed' etc
         drlamt_candidates = []
         for item in entities.items():
             if item[1].label == 'MONEY':
@@ -403,7 +435,6 @@ class TestDocument:
         return drlamt_candidates
 
     def get_possible_purchaser_seller(self, entities, sentence, sent_idx, chunks):
-        #process purchaser and seller entities here
         purchaser_seller_candidates = []
         for item in entities.items():
             if item[1].label == 'PERSON' or item[1].label == 'ORG' or item[1].label == 'PER' or item[1].label == 'NORP':
@@ -429,7 +460,6 @@ class TestDocument:
         return new_ents
 
     def get_possible_status(self, sentence, sent_idx, chunks):
-        #some testing might be good here, could use other noun phrases or try to get verb phrases
         loc_candidates = []
         with open('all_statuses.json') as statuses_json:
             status_dict = json.load(statuses_json)
@@ -472,6 +502,6 @@ class TestDocument:
 
 
 if __name__ == '__main__':
-    test_doc = TestDocument("./data/docs/1032")
+    test_doc = TestDocument("./data/docs/19663")
     features = test_doc.acquired
     print(features)
