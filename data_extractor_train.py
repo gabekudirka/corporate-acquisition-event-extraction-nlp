@@ -60,7 +60,7 @@ class TrainDocument:
             elif line_tokens[0] == 'ACQUIRED:':
                 entities = re.findall('"([^"]*)"', line)
                 if len(entities) == 0:
-                    self.acqbus = '---'
+                    self.acquired = '---'
                     continue
                 for entity in entities:
                     self.true_slots[entity] = 'acquired'
@@ -76,7 +76,7 @@ class TrainDocument:
             elif line_tokens[0] == 'ACQLOC:':
                 entities = re.findall('"([^"]*)"', line)
                 if len(entities) == 0:
-                    self.acqbus = '---'
+                    self.acqloc = '---'
                     continue
                 for entity in entities:
                     self.true_slots[entity] = 'acqloc'
@@ -84,7 +84,7 @@ class TrainDocument:
             elif line_tokens[0] == 'DLRAMT:':
                 entities = re.findall('"([^"]*)"', line)
                 if len(entities) == 0:
-                    self.acqbus = '---'
+                    self.dlramt = '---'
                     continue
                 for entity in entities:
                     self.true_slots[entity] = 'drlamt'
@@ -92,7 +92,7 @@ class TrainDocument:
             elif line_tokens[0] == 'PURCHASER:':
                 entities = re.findall('"([^"]*)"', line)
                 if len(entities) == 0:
-                    self.acqbus = '---'
+                    self.purchaser = '---'
                     continue
                 for entity in entities:
                     self.true_slots[entity] = 'purchaser'
@@ -100,7 +100,7 @@ class TrainDocument:
             elif line_tokens[0] == 'SELLER:':
                 entities = re.findall('"([^"]*)"', line)
                 if len(entities) == 0:
-                    self.acqbus = '---'
+                    self.seller = '---'
                     continue
                 for entity in entities:
                     self.true_slots[entity] = 'seller'
@@ -108,7 +108,7 @@ class TrainDocument:
             elif line_tokens[0] == 'STATUS:':
                 entities = re.findall('"([^"]*)"', line)
                 if len(entities) == 0:
-                    self.acqbus = '---'
+                    self.status = '---'
                     continue
                 for entity in entities:
                     self.true_slots[entity] = 'status'

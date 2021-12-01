@@ -9,6 +9,8 @@ import gensim.downloader
 import numpy as np
 import string
 import pickle
+from spacy.matcher import PhraseMatcher
+from spacy.tokens import Span
 
 class Entity:
     def __init__(self, entity):
@@ -225,11 +227,6 @@ class TestDocument:
                     valid_entities[inner_entity].refers_to = outer_entity
                     valid_entities[inner_entity].is_reference = True
 
-        #set entity dicts for each type
-        # self.loc_entities = {entity[0]: entity[1] for entity in valid_entities.items() if entity[1].label == 'LOC' or entity[1].label == 'GPE' or entity[1].label == 'LANGUAGE'}
-        # self.money_entities = {entity[0]: entity[1] for entity in valid_entities.items() if entity[1].label == 'MONEY'}
-        # self.acquired_entities = {entity[0]: entity[1] for entity in valid_entities.items() if entity[1].label == 'ORG' or entity[1].label == 'FACILITY'}
-        # self.buyer_seller_entities = {entity[0]: entity[1] for entity in valid_entities.items() if entity[1].label == 'ORG' or entity[1].label == 'PERSON'}
         return valid_entities
 
     def process_doc(self):
@@ -247,7 +244,7 @@ class TestDocument:
 
         #self.all_entities = self.process_entities(doc.ents)
 
-        sentences = [self.nlp(sentence.text) for sentence in list(self.spacy_doc.sents)[:3]]
+        sentences = [self.nlp(sentence.text) for sentence in list(self.spacy_doc.sents)[:2]]
         for i, sentence in enumerate(sentences):
             sent_ents = self.process_entities(sentence)
             sent_chunks = list(sentence.noun_chunks)
@@ -317,16 +314,13 @@ class TestDocument:
         if len(vectors) == 0:
             return -1
 
-            # if slot_type == 'seller':
-            #     for i, candidate in enumerate(self.seller_candidates):
-            #         if candidate.sentence_num == 0 and candidate.sentence_loc == 0 and self.purchaser != candidate.text and candidate.sliding_window[2] == 'said':
-            #             return i
-
         probs = self.classifier.predict_log_proba(np.array(vectors).astype(float))
-        #best_n = np.argsort(probs, axis=1)[:,-2:]
+
         preds = self.classifier.predict(np.array(vectors).astype(float))
-        
         preds = [i for i, pred in enumerate(preds) if predict_slot == pred]
+
+        #best_n = np.argsort(probs, axis=1)[:,-2:]
+        
         probs = {probs[i][predict_slot]: i for i in preds}
 
         if len(probs) == 0:
@@ -334,8 +328,6 @@ class TestDocument:
         best_prob = max(list(probs.keys()))
         x = probs[best_prob]
         return probs[best_prob]
-
-
 
     def match_to_chunk(self, entity_text, chunks, sentence):
         #Try to match entity to chunk with exact text
@@ -345,7 +337,8 @@ class TestDocument:
         #if can't match, just find the token with the same text
         indexes = get_location_sentence(sentence, entity_text)
         if indexes[0] != -1:
-            return sentence[indexes[-1] - 1]
+            guess = sentence[indexes[-1] - 1]
+            return guess
 
         return sentence[0]
 
@@ -354,6 +347,7 @@ class TestDocument:
         #maybe exclude certain noun chunks that won't be acquired like 'they' etc.
         acquired_candidates = []
         used_chunks = list(entities.keys())
+
         for item in entities.items():
             if item[1].label == 'FACILITY' or item[1].label == 'FAC' or item[1].label == 'ORG' or item[1].label == 'PRODUCT' \
                  or item[1].label == 'WORK_OF_ART':
@@ -377,14 +371,16 @@ class TestDocument:
 
         return acbus_candidates
         
-
     def get_possible_acqloc(self, entities, sentence, sent_idx, chunks):
         #include noun chunks or naw?
         #put the location concatenation code here
         used_chunks = list(entities.keys())
         loc_candidates = []
+        loc_entities = []
+
         for item in entities.items():
             if item[1].label == 'GPE' or item[1].label == 'LOC' or item[1].label == 'LANGUAGE' or item[1].label == 'NORP': #NORP is a maybe
+                loc_entities.append(item[1])
                 chunk = self.match_to_chunk(item[1].text, chunks, sentence)
                 loc_candidates.append(FeatureExtractor(chunk, self.doc, sentence, sent_idx, entity=item[1]))
                 used_chunks.append(chunk.text)
@@ -399,6 +395,11 @@ class TestDocument:
                 chunk = self.match_to_chunk(item[1].text, chunks, sentence)
                 drlamt_candidates.append(FeatureExtractor(chunk, self.doc, sentence, sent_idx, entity=item[1]))
 
+        new_ents = self.get_custom_dlrmt_ents()
+        for ent in new_ents:
+            chunk = self.match_to_chunk(ent.text, chunks, sentence)
+            drlamt_candidates.append(FeatureExtractor(chunk, self.doc, sentence, sent_idx, entity=ent))
+
         return drlamt_candidates
 
     def get_possible_purchaser_seller(self, entities, sentence, sent_idx, chunks):
@@ -407,9 +408,25 @@ class TestDocument:
         for item in entities.items():
             if item[1].label == 'PERSON' or item[1].label == 'ORG' or item[1].label == 'PER' or item[1].label == 'NORP':
                 chunk = self.match_to_chunk(item[1].text, chunks, sentence)
+                if item[1].text[:3] == 'the':
+                    item[1].text = item[1].text[3:]
                 purchaser_seller_candidates.append(FeatureExtractor(chunk, self.doc, sentence, sent_idx, entity=item[1]))
 
         return purchaser_seller_candidates
+
+    def get_custom_dlrmt_ents(self):
+        label = 'UNDSCLSD'
+        dlramt_phrase_list = ['undisclosed', 'not disclosed', 'undisclosed amount']
+        matcher = PhraseMatcher(self.nlp.vocab)
+        phrase_patterns = [self.nlp(text) for text in dlramt_phrase_list]
+        matcher.add(label, None, *phrase_patterns)
+        matches = matcher(self.spacy_doc)
+
+        lbl = self.spacy_doc.vocab.strings[u'UNDSCLSD']
+
+        new_ents = [Span(self.spacy_doc, match[1],match[2],label= lbl) for match in matches]
+
+        return new_ents
 
     def get_possible_status(self, sentence, sent_idx, chunks):
         #some testing might be good here, could use other noun phrases or try to get verb phrases
@@ -455,6 +472,6 @@ class TestDocument:
 
 
 if __name__ == '__main__':
-    test_doc = TestDocument("./data/docs/18111")
+    test_doc = TestDocument("./data/docs/1032")
     features = test_doc.acquired
     print(features)
