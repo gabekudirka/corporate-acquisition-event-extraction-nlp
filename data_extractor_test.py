@@ -15,6 +15,17 @@ class Entity:
         self.referred_by = None
         self.is_reference = False
 
+class Entity_:
+    def __init__(self, text, label, start, end):
+        self.text = text
+        self.label = label
+        self.start = start
+        self.end = end
+        self.refers_to = None
+        self.referred_by = None
+        self.is_reference = False
+
+
 class TestDocument:
     def __init__ (self, doc_filepath):
         self.doc = self.read_doc(doc_filepath)
@@ -95,11 +106,47 @@ class TestDocument:
                 return '\"' + entity.text + '\"'
         return '---'
 
-    def get_acqloc(self):
-        for entity in self.entities:
-            if entity.label_ == 'GPE' or entity.label_ == 'LOC' or entity.label_ == 'LANGUAGE':
-                return '\"' + entity.text + '\"'
-        return '---'
+    def get_possible_acqloc(self, entities, sentence, sent_idx, chunks):
+        #include noun chunks or naw?                                                                                                                                      
+        #put the location concatenation code here                                                                                                                         
+        used_chunks = list(entities.keys())
+        lst = []
+        loc_candidates = []
+        for item in entities.items():
+            if item[1].label == 'GPE' or item[1].label == 'LOC' or item[1].label == 'LANGUAGE' or item[1].label == 'NORP': #NORP is a maybe                               
+                lst.append(item)
+
+
+        concatenated_locations = []
+        for i in range(1, len(lst)):
+            current = lst[i]
+            previous = lst[i-1]
+
+            if i == len(lst):
+                current_ = Entity_(current[1].text, current[1].label, current[1].start, current[1].end)
+                concatenated_locations.append(current_)
+
+            elif previous[1].end >= (current[1].start - 5):
+                text = previous[1].text + sentence.text[previous[1].end : current[1].start] + current[1].text
+                start = previous[1].start
+                end = current[1].end
+                concatenated_item = Entity_(text, 'LOC', start, end)
+                concatenated_locations.append(concatenated_item)
+                if i == len(lst)-1:
+                    break
+            else:
+                previous_ = Entity_(previous[1].text, previous[1].label, previous[1].start, previous[1].end)
+                concatenated_locations.append(previous_)
+
+        for item in concatenated_locations:
+            print(item.text)
+            chunk = self.match_to_chunk(item.text, chunks, sentence)
+            loc_candidates.append(FeatureExtractor(chunk, self.doc, sentence, sent_idx, entity=item))
+            used_chunks.append(chunk.text)
+
+
+        return loc_candidates
+
 
     def get_drlamt(self):
         for entity in self.entities:
