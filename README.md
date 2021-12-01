@@ -10,13 +10,20 @@ Once the environment is activated you can run the program with the following com
 python3 extract.py <doclist> 
 
 a) For this project we used SpaCy with the pretrained en_core_web_trf pipeline - https://spacy.io/
+We also loaded in the GloVe wikipedia 100 dimension pretrained word embedding model using Gensim https://radimrehurek.com/gensim/auto_examples/howtos/run_downloader_api.html
+To create our classifier we used sklearn's GradientBoostClassifier https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingClassifier.html#sklearn.ensemble.GradientBoostingClassifier.predict
 
-b) It should take about 5 seconds to process each document.
+b) It should take about a minute to load in our models initially and then each document should take about 1-2 seconds
 
-c) Gabrielius Kudirka extracted entities with SpaCy and assigned them to the acquired, acqloc, drlamt, purchaser, and seller slots.
-Aspen Evans extracted the statuses from the training documents into a list and set the status based on whether one of the extracted statuses was found in a given document.
+c) Gabrielius Kudirka primarily worked on creating the machine learning classifier and implementing it into our system. The data_extractor_train file was created by 
+Gabrielius and extracts all potential candidates for classification as well as all of their features and their label. Once these are extracted from the text they
+are formatted as a numerical vector using one hot encoding and word embeddings to be inputted into our classifier. Gabrielius also created and tuned the GradientBoostingClassifier in the ml_classifier.py and ml_classifier.ipynb files. Gabrielius also worked on extracting candidates for the slots and formatting them
+for the classifier at test time.
 
-d) We have not yet found a reliable way to find the ACQBUS slot so we are not setting this yet. Despite the long runtime though there are no known major limitations.
+Aspen Evans worked on formatting the extracted potential slot candidates so they would more accurately reflect what the expected outputs for these slots would be.
+In particular she worked on creating new money entities for occurences 'undisclosed' in the text and concatenating comma separatedpotential locations that would come up as separated from spaCy's NER system. These processed entities would be inputted into Gabrielius's code to be classified by our classifier.
+
+d) Our program produces a large number of warnings while running however these can be disregarded, an output template file should still be created at the end
 
 
 
