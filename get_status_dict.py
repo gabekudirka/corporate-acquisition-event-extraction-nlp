@@ -18,5 +18,5 @@ def get_status_dictionary():
     return status_dictionary
 
 dict = get_status_dictionary()
-with open('all_statuses.json', 'w') as outfile:
+with open('all_statuses_2.json', 'w') as outfile:
     json.dump(dict, outfile)

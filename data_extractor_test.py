@@ -456,5 +456,5 @@ class TestDocument:
 
 if __name__ == '__main__':
     test_doc = TestDocument("./data/docs/18111")
-    features = test_doc.get_feature_vector()
+    features = test_doc.acquired
     print(features)
